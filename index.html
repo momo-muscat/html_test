@@ -7,37 +7,31 @@
     <script src="https://cdn.tailwindcss.com" defer></script>
   </head>
   <body class="bg-gray-100 min-h-screen py-10">
-    <div class="max-w-[1000px] mx-auto px-4">
+    <div class="w-full px-4">
       <h1 class="text-2xl font-bold text-gray-800 mb-6">問合せ票</h1>
 
-      <table class="w-full text-sm border-collapse" aria-label="問合せ票">
-        <colgroup>
-          <col style="width: 20%" />
-          <col style="width: 18%" />
-          <col style="width: 20%" />
-          <col style="width: 20%" />
-          <col style="width: 22%" />
-        </colgroup>
-        <tbody>
-          <tr>
-            <td class="px-2 py-1">
-              <span class="font-bold">伝票番号： </span>123456789012
-            </td>
-            <td class="px-2 py-1">
-              <span class="font-bold">お客様番号： </span>00123456
-            </td>
-            <td class="px-2 py-1">
-              <span class="font-bold">お問合せ番号： </span>987654321
-            </td>
-            <td class="px-2 py-1">
-              <span class="font-bold">メール：</span> taro@example.com
-            </td>
-            <td class="px-2 py-1">
-              <span class="font-bold">住所：</span> 東京都渋谷区
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="flex gap-10 mb-3 items-center">
+          <div class="flex flex-col items-start">
+              <div>配送業者名</div>
+              <p class="font-bold text-lg">ゆうパック</p>
+          </div>
+          <div class="flex flex-col items-start">
+              <div>伝票番号</div>
+              <p class="font-bold text-lg">8627-0912-5865</p>
+          </div>
+          <div class="flex flex-col items-start">
+              <div>着店(仕分)コード</div>
+              <p class="font-bold text-lg">86-10-51</p>
+          </div>
+          <div class="flex flex-col items-start">
+              <div>フォーム種別</div>
+              <p class="font-bold text-lg">通常 外商</p>
+          </div>
+          <div class="flex flex-col items-start">
+              <div>お客様番号</div>
+              <p class="font-bold text-lg">0065-2750</p>
+          </div>
+      </div>
 
       <table
         class="w-full text-sm border-separate border-spacing-x-[5px] border-spacing-y-0"
@@ -56,103 +50,110 @@
                 aria-label="問合せ票 詳細1"
               >
                 <colgroup>
-                  <col style="width: 2em" />
-                  <col style="width: auto" />
-                  <col style="width: 7em" />
+                  <col style="width: 10%" />
+                  <col style="width: 30%" />
+                  <col style="width: 40%" />
+                  <col style="width: 20%" />
                 </colgroup>
                 <tbody>
                   <tr>
                     <td
-                      class="border border-gray-400 px-2 py-1 text-center font-bold bg-blue-600 text-white"
+                      class="border border-gray-400 px-1 py-1 text-center font-bold bg-blue-600 text-white"
                     >
-                      お届け先
+                      お<br>届<br>け<br>先
                     </td>
-                    <td colspan="2" class="border border-gray-400 px-2 py-1">
+                    <td colspan="3" class="border border-gray-400 px-1 py-1">
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>〒 861-0501 TEL 090-4357-1940</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>熊本県山鹿市</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>山鹿１５８５</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>門前美術館</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>&nbsp;</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>&nbsp;</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>角田　頼子・恵子　様</span>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td
-                      class="border border-gray-400 px-2 py-1 text-center font-bold"
+                      class="border border-gray-400 px-1 py-1 text-center font-bold bg-blue-100"
                     >
-                      ご依頼主
+                      ご<br>依<br>頼<br>主
                     </td>
-                    <td colspan="2" class="border border-gray-400 px-2 py-1">
+                    <td colspan="3" class="border border-gray-400 px-1 py-1">
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>〒 861-0501 TEL 090-4998-0507</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>熊本県山鹿市</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>山鹿３２９－１</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>&nbsp;</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>&nbsp;</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>&nbsp;</span>
                       </div>
                       <div class="flex items-center justify-between">
-                        <span>見出し2</span>
+                        <span>井上　久子　様</span>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td
-                      class="border border-gray-400 px-2 py-1 text-center font-bold"
+                      rowspan="6"
+                      class="border border-gray-400 px-1 py-1 text-center font-bold bg-blue-100"
                     >
-                      品名1
+                      品<br>名
                     </td>
-                    <td class="border border-gray-400 px-2 py-1">項目D</td>
-                    <td class="border border-gray-400 px-2 py-1">項目E</td>
+                    <td colspan="2" class="border border-gray-400 border-b-0 px-1 py-1">キリン　一番搾り生ビ</td>
+                    <td class="border border-gray-400 border-b-0 px-1 py-1 text-right">数量</td>
                   </tr>
                   <tr>
-                    <td
-                      class="border border-gray-400 px-2 py-1 text-center font-bold"
-                    >
-                      品名2
-                    </td>
-                    <td class="border border-gray-400 px-2 py-1">項目D</td>
-                    <td class="border border-gray-400 px-2 py-1">項目E</td>
+                    <td class="border border-gray-400 border-t-0 border-r-0 px-1 py-1">160202 00-00</td>
+                    <td class="border border-gray-400 border-t-0 border-l-0 px-1 py-1">Ｋ－ＮＩＰ３　　　酒</td>
+                    <td class="border border-gray-400 border-t-0 px-1 py-1 text-right">1</td>
                   </tr>
                   <tr>
-                    <td
-                      class="border border-gray-400 px-2 py-1 text-center font-bold"
-                    >
-                      品名3
-                    </td>
-                    <td class="border border-gray-400 px-2 py-1">項目D</td>
-                    <td class="border border-gray-400 px-2 py-1">項目E</td>
+                    <td colspan="2" class="border border-gray-400 border-b-0 px-1 py-1">キリン　一番搾り生ビ</td>
+                    <td class="border border-gray-400 border-b-0 px-1 py-1 text-right">数量</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-gray-400 border-t-0 border-r-0 px-1 py-1">160202 00-00</td>
+                    <td class="border border-gray-400 border-t-0 border-l-0 px-1 py-1">Ｋ－ＮＩＰ３　　　酒</td>
+                    <td class="border border-gray-400 border-t-0 px-1 py-1 text-right">1</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="border border-gray-400 border-b-0 px-1 py-1">キリン　一番搾り生ビ</td>
+                    <td class="border border-gray-400 border-b-0 px-1 py-1 text-right">数量</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-gray-400 border-t-0 border-r-0 px-1 py-1">160202 00-00</td>
+                    <td class="border border-gray-400 border-t-0 border-l-0 px-1 py-1">Ｋ－ＮＩＰ３　　　酒</td>
+                    <td class="border border-gray-400 border-t-0 px-1 py-1 text-right">1</td>
                   </tr>
                 </tbody>
               </table>
             </td>
-            <td class="border border-gray-400 px-2 py-1"></td>
-            <td class="border border-gray-400 px-2 py-1"></td>
+            <td class="border border-gray-400 px-1 py-1"></td>
+            <td class="border border-gray-400 px-1 py-1"></td>
           </tr>
         </tbody>
       </table>
