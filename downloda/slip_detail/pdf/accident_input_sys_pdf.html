@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>システム伝票詳細 PDF</title>
+    <meta name="description" content="システム伝票詳細">
+</head>
+
+<!-- 岡島 -->
+{% if company_cd == OKAJIMA_CD %}
+
+{% endif %}
+<!-- 鶴屋 -->
+{% if company_cd == TSURUYA_CD %}
+<body>
+    <!-- ページタイトル ・出力日時 -->
+    <div class="title-date-layout" style="margin-bottom: 10px;">
+        <p class="text-2xl">問合せ票</p>
+
+        <div class="pr-3 justify-self-end">
+            <p>出力日時</p>
+        </div>
+
+        <div>
+            <p>{{ object["now_format"] if object["now_format"] else "" }}</p>
+        </div>
+    </div>
+
+    <!-- 店舗部門・担当 -->
+    <div class="w-full">
+        <div style="display: flex;">
+            <div style="flex: 1 1 auto; min-width: 0;">
+                <table class="table-fixed table-border border-box" style="width: 100%;">
+                    <tr>
+                        <th class="pl-2 text-align-top-left border-all font-normal" style="padding-top: 1px;">
+                            <h3 class="text-xs" style="margin: 0;">店舗・部門</h3>
+                        </th>
+                        <th class="pl-2 text-2lines text-align-top-left border-all font-normal" style="padding-top: 1px;">
+                            <h3 class="text-xs" style="margin: 0;">担当</h3>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid grid-rows-2" style="flex: 0 0 auto; grid-template-rows: auto auto; align-content: start; row-gap: 0; margin-left: 15px;">
+                <div class="text-left justify-self-end">
+                    <span class="text-xs pl-2">{{ object["sykka_place"] if object["sykka_place"] else "" }}</span>
+                    <span class="text-xs pl-2">{{ object["sykka_tel"] if object["sykka_tel"] else "" }}</span>
+                </div>
+                <!-- ユーザー名 -->
+                <div class="text-left justify-self-end">
+                    <span class="text-xs">{{ request.user.name }}</span>
+                    <span class="text-xs pl-2">{{ object["sykka_fax"] if object["sykka_fax"] else "" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-5">
+        <div class="flex flex-col items-start">
+            <div>配送業者名</div>
+            <h2 class="font-bold text-base">{{ object["dengyosya_nm"] if object["dengyosya_nm"] else "" }}</h2>
+        </div>
+        <div class="flex flex-col items-start">
+            {% if object["form_syubetu"] == 2 %}
+                <div>伝票番号(貴)</div>
+            {% else %}
+                <div>伝票番号</div>
+            {% endif %}
+            <h2 class="font-bold text-base">{{ object["denno_display"] if object["denno_display"] else "" }}</h2>
+        </div>
+        <div class="flex flex-col items-start">
+            <div>着店(仕分)コード</div>
+            <h2 class="font-bold text-base">{{ object["tyaku_scd_display"] if object["tyaku_scd_display"] else "" }}</h2>
+        </div>
+        <div class="flex flex-col items-start">
+            <div>フォーム種別</div>
+            <h2 class="font-bold text-base">{{ object["form_syubetu_display"] if object["form_syubetu_display"] else "" }}</h2>
+        </div>
+        <div class="flex flex-col items-start">
+            <div>お客様番号</div>
+            <h2 class="font-bold text-base">{{ object["client_no"] if object["client_no"] else "" }}</h2>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2">
+        <!-- 左側 -->
+        <div>
+            <!-- お届け先・ご依頼主・品名：3ブロックを1つのグリッドにまとめ、境界線を1本の連続した線にする -->
+            <div class="left-column-grid">
+                <!-- お届け先 -->
+                <p class="left-grid-label font-bold text-xs text-white text-center p-1 vertical text_align_center bg-black">
+                    <span>お</span>
+                    <span>届</span>
+                    <span>け</span>
+                    <span>先</span>
+                </p>
+                <div class="left-grid-data left-grid-data-padded flex flex-col text-xs bg-white">
+                    <div class="flex flex-row">
+                        <div class="flex flex-1 flex-row">
+                            {% if object["todoke_yubin"]%}
+                                <p>{{ object["todoke_yubin"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-1 flex-row pl-2">
+                            {% if object["todoke_tel"] %}
+                                <p>{{ object["todoke_tel"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex flex-row">
+                        <div class="flex-1 flex flex-col">
+                            <p>{% if object["todoke_ate1"] %}{{ object["todoke_ate1"] }}{% else %}&nbsp;</p>{% endif %}
+                            <p>{% if object["todoke_ate2"] %}{{ object["todoke_ate2"] }}{% else %}&nbsp;</p>{% endif %}
+                            <p>{% if object["todoke_ate3"] %}{{ object["todoke_ate3"] }}{% else %}&nbsp;</p>{% endif %}
+                            <p>{% if object["todoke_ate4"] %}{{ object["todoke_ate4"] }}{% else %}&nbsp;</p>{% endif %}
+                            <p>{% if object["todoke_ate5"] %}{{ object["todoke_ate5"] }}{% else %}&nbsp;</p>{% endif %}
+                            <p>{% if object["todoke_ate6"] %}{{ object["todoke_ate6"] }}{% else %}&nbsp;</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ご依頼主 -->
+                <p class="left-grid-label p-1 vertical text_align_center font-semibold text-xs text-black bg-blue-200">
+                    <span>ご</span>
+                    <span>依</span>
+                    <span>頼</span>
+                    <span>主</span>
+                </p>
+                <div class="left-grid-data left-grid-data-padded flex flex-col text-xs bg-white">
+                    <div class="flex flex-row pt-1">
+                        <div class="flex flex-1 flex-row space-x-4">
+                            {% if object["jitaku_flg"] != 1 %}
+                                {% if object["irai_yubin"] %}
+                                    <p>{{ object["irai_yubin"] }}</p>
+                                {% endif %}
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-1 flex-row space-x-4 pl-2">
+                            {% if object["jitaku_flg"] != 1 %}
+                                {% if object["h_irai_tel"] %}
+                                    <p>{{ object["h_irai_tel"] }}</p>
+                                {% endif %}
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex flex-row">
+                        <div class="flex-1 flex flex-col text-xs">
+                            <p>{% if object["irai_ate1"] %}{{ object["irai_ate1"] }}{% else %}&nbsp;{% endif %}</p>
+                            <p>{% if object["irai_ate2"] %}{{ object["irai_ate2"] }}{% else %}&nbsp;{% endif %}</p>
+                            <p>{% if object["irai_ate3"] %}{{ object["irai_ate3"] }}{% else %}&nbsp;{% endif %}</p>
+                            <p>{% if object["irai_ate4"] %}{{ object["irai_ate4"] }}{% else %}&nbsp;{% endif %}</p>
+                            <p>{% if object["irai_ate5"] %}{{ object["irai_ate5"] }}{% else %}&nbsp;{% endif %}</p>
+                            <p>{% if object["irai_ate6"] %}{{ object["irai_ate6"] }}{% else %}&nbsp;{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 品名 -->
+                <p class="left-grid-label p-1 font-semibold vertical text-xs text-black text_align_center bg-blue-200">
+                    <span>品</span>
+                    <span>名</span>
+                </p>
+                <div class="left-grid-data text-xs bg-white">
+                    <table class="product-name-table">
+                        <colgroup>
+                            <col style="width: 85%">
+                            <col style="width: 15%">
+                        </colgroup>
+                        <tbody>
+                            {% if object["h_den_syubetu"] == 3 %}
+                                <tr>
+                                    <!-- 品名1 -->
+                                    <td class="product-name-cell border-b border-blue-500">
+                                        {% set koguti_su = object.koguti_su | default(0, true) %}
+                                        {% set koguti = object.koguti | default(0, true) %}
+                                        <p>{{ koguti_su + 1 }} 個口の {{ koguti + 1 }} 個目</p>
+                                    </td>
+                                    <!-- 数量1 -->
+                                    <td class="product-name-cell border-l border-b border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        <p>&nbsp;</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 品名2 -->
+                                    <td class="product-name-cell border-b border-blue-500">
+                                        <p>&nbsp;</p>
+                                    </td>
+                                    <!-- 数量2 -->
+                                    <td class="product-name-cell border-l border-b border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        <p>&nbsp;</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 品名3 -->
+                                    <td class="product-name-cell">
+                                        <p>&nbsp;</p>
+                                    </td>
+                                    <!-- 数量3 -->
+                                    <td class="product-name-cell border-l border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        <p>&nbsp;</p>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <!-- 品名1 -->
+                                    <td class="product-name-cell border-b border-blue-500">
+                                        {% if den_m_tbl[0] %}
+                                            <p>{{ den_m_tbl[0].hinmei }}</p>
+                                            <div class="flex flex-row gap-4">
+                                                <p>{{ den_m_tbl[0].gcode }}</p>
+                                                <p>{{ den_m_tbl[0].hinkigou }}</p>
+                                            </div>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                    <!-- 数量1 -->
+                                    <td class="product-name-cell text-right border-l border-b border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        {% if den_m_tbl[0] %}
+                                            <p>{{ den_m_tbl[0].suryo }}</p>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 品名2 -->
+                                    <td class="product-name-cell border-b border-blue-500">
+                                        {% if den_m_tbl[1] %}
+                                            <p>{{ den_m_tbl[1].hinmei }}</p>
+                                            <div class="flex flex-row gap-4">
+                                                <p>{{ den_m_tbl[1].gcode }}</p>
+                                                <p>{{ den_m_tbl[1].hinkigou }}</p>
+                                            </div>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                    <!-- 数量2 -->
+                                    <td class="product-name-cell text-right border-l border-b border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        {% if den_m_tbl[1] %}
+                                            <p>{{ den_m_tbl[1].suryo }}</p>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 品名3 -->
+                                    <td class="product-name-cell">
+                                        {% if den_m_tbl[2] %}
+                                            <p>{{ den_m_tbl[2].hinmei }}</p>
+                                            <div class="flex flex-row gap-4">
+                                                <p>{{ den_m_tbl[2].gcode }}</p>
+                                                <p>{{ den_m_tbl[2].hinkigou }}</p>
+                                            </div>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                    <!-- 数量3 -->
+                                    <td class="product-name-cell text-right border-l border-blue-500">
+                                        <span class="text-center">数量</span>
+                                        {% if den_m_tbl[2] %}
+                                            <p>{{ den_m_tbl[2].suryo }}</p>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 真ん中側 -->
+        <div>
+            <!-- 受注情報 -->
+            <div class="pb-3">
+                <div class="custom-grid-table">
+                    <div class="table-row text-xs">
+                        <div class="cell label"><p>お届け先番号</p></div>
+                        <div class="cell value">
+                            {% if object["todoke_id"] %}
+                                <p>{{ object["todoke_id"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="cell label">受注日</div>
+                        <div class="cell value">
+                            {% if object["juchu_ymd_format"] %}
+                                <p>{{ object["juchu_ymd_format"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="cell label">受注店</div>
+                        <div class="cell value">
+                            {% if object["h_mise_nm"] %}
+                                <p>{{ object["h_mise_nm"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+
+                    <div class="table-row">
+                        <div class="cell label">受注部門</div>
+                        <div class="cell value">
+                            {% if object["h_bumon_nm"] %}
+                                <p>{{ object["h_bumon_nm"] }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="cell label">受注係員</div>
+                        <div class="cell value">
+                            {% if object["h_kakari_nm"] %}
+                                <p class="">{{ object["h_kakari_nm"] }}</p>
+                            {% else %}
+                                <p class="">&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="cell label">受注係員連絡先</div>
+                        <div class="cell value">
+                            {% if object["bumon_tel"] %}
+                                <p class="">{{ object["bumon_tel"] }}</p>
+                            {% else %}
+                                <p class="">&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="cell label">伝票発行日時</div>
+                        <div class="cell value">
+                            {% if object["den_out_ymd_format"] %}
+                                <p class="">{{ object["den_out_ymd_format"] }}</p>
+                            {% else %}
+                                <p class="">&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="table-row">
+                        <div class="cell label">伝票発行場所</div>
+                        <div class="cell value">
+                            {% if object["den_out_nm"] %}
+                                <p class="">{{ object["den_out_nm"] }}</p>
+                            {% else %}
+                                <p class="">&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- お届け予定日・時間帯お届け・送料 -->
+            <div class="custom-grid-layout_3_3_2 my-4 haisiji-soryo-block">
+                <!-- お届け予定（指定）日 -->
+                <div class="text-center custom-column-wrapper">
+                    <div class="border border-blue-500 bg-black text-white label-box">
+                        <span class="inline-block leading-none text-xs font-semibold">お届け予定</span>
+                    </div>
+                    {% if object["haisiji_day_format"]  %}
+                        <p class="value-box border-blue-500">{{ object["haisiji_day_format"] }}</p>
+                    {% else %}
+                        <p class="value-box border-blue-500">&nbsp;</p>
+                    {% endif %}
+                </div>
+
+                <!-- 時間帯お届け -->
+                <div class="text-center mr-4 custom-column-wrapper">
+                    <div class="border border-blue-500 bg-black text-white label-box">
+                        <span class="inline-block leading-none text-xs font-semibold">時間帯</span>
+                    </div>
+
+                    {% if object["haisiji2_nm"] %}
+                        <p class="value-box border-blue-500">{{ object["haisiji2_nm"] }}</p>
+                    {% else %}
+                        <p class="value-box border-blue-500">&nbsp;</p>
+                    {% endif %}
+                </div>
+
+                <!-- 送料 -->
+                <div class="text-center custom-column-wrapper">
+                    <div class="label-box border-blue-500 bg-blue-200">
+                        <span class="text-center text-xs font-semibold">送料</span>
+                    </div>
+                    {% if object["soryo"] %}
+                        <!-- 3桁のカンマ区切り -->
+                        <p class="value-box border-blue-500">{{ "{:,.0f}".format(object["soryo"]) }}</p>
+                    {% else %}
+                        <p class="value-box border-blue-500">&nbsp;</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 配送業者・配送便種・未発送理由 -->
+            <div class="w-full my-4 delivery-agent-block">
+                <div class="custom-grid-table">
+                    <div class="table-row text-xs">
+                        <div class="cell label"><p>配送業者</p></div>
+                        <div class="cell value">
+                            <p class="">{% if object["hai_gyosya_nm"] %}{{ object["hai_gyosya_nm"] }} {% else %}&nbsp;{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div class="table-row text-xs">
+                        <div class="cell label"><p>配送便種</p></div>
+                        <div class="cell value">
+                            <p>{% if object["haibin_nm"] %}{{ object["haibin_nm"] }}{% else %}&nbsp;{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div class="table-row text-xs">
+                        <div class="cell label"><p>未発送理由</p></div>
+                        <div class="cell value">
+                            <p>{% if object["hassou_nm"] %}{{ object["hassou_nm"] }}{% else %}&nbsp;{% endif %}{% if object["shipping_maintenance_memo"] %}{{ object["shipping_maintenance_memo"] }}{% else %}&nbsp;{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側 -->
+        <div>
+            <!-- 添付・メモ・作業指示・のし -->
+            <div class="bg-white attach-memo-block">
+                <!-- 添付 -->
+                <div class="grid_cols_2_15_85 text-xs">
+                    <p class="font-semibold text-xs text-black border-blue-500 bg-blue-200">添付</p>
+                    <p class="border-blue-500">{{ object["tenpu_nm"] }}</p>
+                </div>
+
+                <!-- メモ -->
+                <div class="grid_cols_2_15_85 text-xs">
+                    <p class="font-semibold text-xs text-black border-blue-500 bg-blue-200">メモ</p>
+                    <p class="line-clamp-3 border-blue-500">{{ object["haisou_memo"] }}<br>{{ object["hosou_memo"] }}<br>{{ object["irai_memo"] }}</p>
+                </div>
+
+                <!-- 作業指示 -->
+                <div class="grid_cols_2_15_85 text-xs">
+                    <p class="font-semibold text-xs text-black border-blue-500 bg-blue-200"><span>作業</span><span>指示</span></p>
+                    <p class="line-clamp-2 border-blue-500">{{ object["hosou_nm"] }}<br>{{ object["nosi_nm"] }}</p>
+                </div>
+
+                <!-- のし -->
+                <div class="grid_cols_2_15_85 text-xs">
+                    <p class="font-semibold text-xs text-black border-blue-500 bg-blue-200">のし</p>
+                    <p class="line-clamp-6 border-blue-500">{{ object["youto_nm"] }}<br>{{ object["nosi1_nm"] }}<br>{{ object["nosi2_nm"] }}<br>{{ object["nosi3_nm"] }}<br>{{ object["nosi4_nm"] }}<br>{{ object["nosi5_nm"] }}<br>{{ object["nosi6_nm"] }}</p>
+                </div>
+            </div>
+
+            <!-- 元伝票番号 -->
+            <table class="table-fixed table-border cell-pad text-xs mt-5 border-blue-500">
+                <colgroup>
+                    <col style="width: 40%;">
+                    <col style="width: 60%;">
+                </colgroup>
+                <tr>
+                    <th class="text-xs border-all border-blue-500 bg-blue-50 font-semibold">元伝票番号</th>
+                    <td class="border-all border-blue-500">
+                    {% if object["moto_denno_display"] %}
+                        <p class="inline-block mx-auto text-black text-xs w-full max-w-32 text-center font-bold text-inherit text-left">
+                            {{ object["moto_denno_display"] }}
+                        </p>
+                    {% else %}
+                        <p class="pl-2">&nbsp;</p>
+                    {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 事故 -->
+            <table class="table-fixed table-border no-border-t cell-pad text-xs bg-white border-blue-500">
+                <colgroup>
+                    <col style="width: 40%;">
+                    <col style="width: 60%;">
+                </colgroup>
+                <tr>
+                    <th class="no-border-t border-l border-r border-b border-blue-500 bg-blue-50 font-semibold">事故</th>
+                    <td class="no-border-t border-l border-r border-b border-blue-500">
+                        {% if object["jiko_flg"] != 0 %}
+                        <div class="px-2 text-xs">
+                            <p class="text-red-500 w-full text-center font-bold">
+                                事故あり
+                            </p>
+                        </div>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 再発行伝票番号 -->
+            <table class="table-fixed table-border no-border-t cell-pad text-xs mb-4 border-blue-500">
+                <colgroup>
+                    <col style="width: 40%;">
+                    <col style="width: 60%;">
+                </colgroup>
+                <tr>
+                    <th class="no-border-t border-l border-r border-b border-blue-500 bg-blue-50 font-semibold">再発行伝票番号</th>
+                    <td class="no-border-t border-l border-r border-b border-blue-500">
+                    {% if reissue_slip_numbers %}
+                        {% for obj in reissue_slip_numbers %}
+                            {% if obj.s_denno %}
+                                <p class="inline-block mx-auto text-black text-xs w-full max-w-32 text-center font-bold text-inherit text-left">
+                                    {{ obj.s_denno_display }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>&nbsp;</p>
+                    {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="pb-3">
+        <!-- 横線 -->
+        <hr>
+    </div>
+
+    <div>
+        <div class="grid grid-cols-6_1_3 w-full" style="margin-bottom: 10px;">
+            <!-- 戻り品・回答（日・者・電話番号） -->
+            <div class="left-item">
+                <table class="table-border cell-pad w-full border-blue-500" style="margin-bottom: 8.5px;">
+                    <colgroup>
+                        <col style="width: 33.33%;">
+                        <col style="width: 66.67%;">
+                    </colgroup>
+                    <tr>
+                        <th class="text-sm text-left font-normal border-blue-500">戻り品発生日・理由</th>
+                        <td class="text-sm border-blue-500">{{ object["hacchu_henpin"] if object["hacchu_henpin"] else "" }}</td>
+                    </tr>
+                </table>
+                <table class="table-border cell-pad w-full border-blue-500" style="border: 3px solid #111111;">
+                    <colgroup>
+                        <col style="width: 33.33%;">
+                        <col style="width: 33.33%;">
+                        <col style="width: 33.34%;">
+                    </colgroup>
+                    <tr>
+                        <th class="text-sm text-center font-normal bg-blue-200 border-blue-500">回答日</th>
+                        <th class="text-sm text-center font-normal bg-blue-200 border-blue-500">回答者</th>
+                        <th class="text-sm text-center font-normal bg-blue-200 border-blue-500">回答者電話番号</th>
+                    </tr>
+                    <tr>
+                        <td class="text-2lines border-blue-500">&nbsp;</td>
+                        <td class="text-2lines border-blue-500">&nbsp;</td>
+                        <td class="text-2lines border-blue-500">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 産直業者・再送発送伝票番号 -->
+            <div class="right-item">
+                <table class="table-border cell-pad w-full border-blue-500">
+                    <colgroup>
+                        <col style="width: 30%;">
+                        <col style="width: 70%;">
+                    </colgroup>
+                    <tr>
+                        <th class="text-sm text-left font-normal border-blue-500">産直業者</th>
+                        <td class="border-blue-500">&nbsp;</td>
+                    </tr>
+                </table>
+                <table class="table-border cell-pad w-full border-blue-500" style="margin-top: 8.5px;">
+                    <tr>
+                        <th class="text-sm text-center font-normal border-blue-500">再送配送伝票番号</th>
+                    </tr>
+                    <tr>
+                        <td class="no-border-t text-2lines border-blue-500">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="process_container" style="padding-top: 0;">
+            <!-- 処理内容 -->
+            <div class="process_box-left mb-3 text-sm border-bold" style="border: 3px solid #111111; width: calc(23% + 4px);">
+                <div class="flex">
+                    <p class="pl-1 pr-1 border-r vertical text_align_center font-bold text-black" style="flex: 0 0 auto;">
+                        <span>処</span>
+                        <span>理</span>
+                        <span>内</span>
+                        <span>容</span>
+                    </p>
+                    <div class="w-full" style="flex: 1 1 auto; min-width: 0; height: 100%;">
+                        <table class="table-border no-border-l no-border-t no-border-r no-border-b bg-white w-full border-blue-500" style="table-layout: fixed;">
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r no-border-t p-1 border-blue-500"> 1 依頼主転送</td></tr>
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r p-1 border-blue-500">2 お届け先再配送</td></tr>
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r p-1 bg-blue-200 border-blue-500">3 住所変更後再発送</td></tr>
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r p-1 bg-blue-200 border-blue-500">4 今回のみ転送</td></tr>
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r p-1 border-blue-500">5 外商持込変更</td></tr>
+                            <tr style="height: 29.76pt;"><td class="no-border-l no-border-r no-border-b p-1 border-blue-500">6 キャンセル処理</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 矢印 -->
+            <div class="text-center-container">
+                <p class="arrow -right"></p>
+            </div>
+
+
+            <div class="process_box-right border-bold">
+                <!-- 再発送お届け先-->
+                <div class="grid-cols_container">
+                    <div class="flex pr-2 pl-2 border-r">
+                        <p class="w-fit vertical text_align_center font-bold text-sm text-black">
+                            <span>再</span>
+                            <span>配</span>
+                            <span>送</span>
+                            <span>お</span>
+                            <span>届</span>
+                            <span>け</span>
+                            <span>先</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-white w-full">
+                        <div class="grid grid-cols-4_6">
+                            <div class="grid grid_cols_2_15_85">
+                                <p class="border-b text-1-5lines text-lg center-box-flex">〒</p>
+                                <!-- <p class="border-all text-1-5lines">&nbsp;</p> -->
+                                <div class="border-l border-b text-1-5lines postal-area">
+                                    <span class="hyphen">ー</span>
+                                </div>
+                            </div>
+                            <div class="grid grid_cols_2_15_85" style="grid-template-columns: 10% 90%;">
+                                <p class="w-fit border-b border-l border-r text-1-5lines text-lg">
+                                    <span class="mt-1 center-box-flex">☎</span>
+                                </p>
+                                <!-- <p class="border-t border-b border-l border-r text-1-5lines">&nbsp;</p> -->
+                                <div class="border-b text-1-5lines phone-area">
+                                    <span class="phone-format">&nbsp; (&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ー</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="border-dashed text-2lines">&nbsp;</div>
+                            <div class="text-2lines">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cols_container border-b">
+                    <div class="flex pr-2 pl-2 border-t border-r">
+                        <p class="w-fit vertical text_align_center font-bold text-sm text-black">
+                            <span>氏</span>
+                            <span>名</span>
+                        </p>
+                    </div>
+                    <div class="bg-white w-full" style="display: flex; border-top: 1.5px solid #111111;">
+                        <div style="flex: 0 0 40%; border-right: 1.5px solid #111111;">
+                            <div class="border-dashed text-2lines">&nbsp;</div>
+                            <div class="text-2lines text-align-buttom-right text-sm">様 &nbsp;</div>
+                        </div>
+                        <div class="font-bold text-sm text-black" style="flex: 0 0 6%; border-right: 1.5px solid #111111;">
+                            <div class="vertical text_align_center" style="height: 100%;">
+                                <span>日</span>
+                                <span>付</span>
+                                <span>指</span>
+                                <span>定</span>
+                            </div>
+                        </div>
+                        <div style="flex: 0 0 24%; border-right: 1.5px solid #111111;">&nbsp;</div>
+                        <div class="font-bold text-sm text-black" style="flex: 0 0 6%; border-right: 1.5px solid #111111;">
+                            <div class="vertical text_align_center" style="height: 100%;">
+                                <span>時</span>
+                                <span>間</span>
+                                <span>帯</span>
+                                <span>指</span>
+                                <span>定</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1 1 auto; min-width: 0;">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="grid-cols_container" style="min-height: 27.5pt;">
+                    <div class="flex pr-2 pl-2 border-r">
+                        <p class="w-fit vertical text_align_center font-bold text-sm text-black">
+                            <span>備</span>
+                            <span>考</span>
+                        </p>
+                    </div>
+                    <div class="bg-white w-full">
+                        <div style="height: 100%;">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="text-group-container text-xs" style="grid-template-columns: 182pt auto;">
+                <p>・太枠の中を記入してください。</p>
+                <p>・お届け先が変更される場合は、再発送お届け先の記入は、必須です。</p>
+                <p>・処理内容に〇を付けてください。</p>
+                <p>・熨斗が変更される場合は、備考欄に記入ください。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品一覧 -->
+    <div class="mx-auto overflow-x-auto pt-3">
+        {% if den_m_tbl|length != 0 %}
+        <table class="table-border cell-pad w-screen text-xs no-split">
+            <thead class="">
+                <tr>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">No</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">品番</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">ギフトコード</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">商品名</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">商品記号</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">色柄·サイズ</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">数量</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">単価</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">合計金額</th>
+                    <th class="px-2 py-1 text-center font-semibold bg-blue-200 border-blue-500">のしサイズ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in den_m_tbl %}
+                <tr>
+                    <td class="px-2 py-1 text-right break-all border-blue-500">
+                        {% if obj.sgyo_no %}{{ obj.sgyo_no }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all border-blue-500">
+                        {% if obj.hinban %}{{ obj.hinban }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all w-4em border-blue-500">
+                        {% if obj.gcode %}{{ obj.gcode }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all border-blue-500">
+                        {% if obj.hinmei %}{{ obj.hinmei }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all border-blue-500">
+                        {% if obj.hinkigou %}{{ obj.hinkigou }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all w-5em border-blue-500">
+                        {% if obj.giro_nm %}{{ obj.giro_nm }}<br>{% endif %}
+                        {% if obj.gsize_nm %}{{ obj.gsize_nm }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 text-right break-all border-blue-500">
+                        {% if obj.suryo %}{{ obj.suryo }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 text-right break-all border-blue-500">
+                        {% if obj.tanka %}{{ "{:,.0f}".format(obj.tanka) }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 text-right break-all border-blue-500">
+                        {% if obj.kingaku %}{{ "{:,.0f}".format(obj.kingaku) }}{% endif %}
+                    </td>
+                    <td class="px-2 py-1 break-all w-6em border-blue-500">
+                        {% if obj.nosigou_scd %}{{ obj.nosigou_scd }}{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+{% endif %}
+</html>

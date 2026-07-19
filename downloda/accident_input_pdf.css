@@ -1,0 +1,1280 @@
+@page {
+    size: A4;
+    margin: -5mm;
+}
+
+/* リセットとベーススタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "NotoSansJP", sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #000;
+    transform: scale(1.0);
+    transform-origin: top center;
+    width: 100%;
+    margin: 0 auto; 
+}
+
+/* レイアウトユーティリティ */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-flex-start {
+    justify-content: flex-start;
+}
+
+.justify-self-end {
+    justify-self: end;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.grid-rows-2 {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.grid-rows-3 {
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.flex-\[0\.8\] {
+  flex: 0.8 1 0%;
+}
+
+.flex-\[1\.2\] {
+  flex: 1.2 1 0%;
+}
+
+/* 幅ユーティリティ */
+.h-fit {
+    height: fit-content;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w-fit {
+    width: fit-content;
+}
+
+.w-1\/2 {
+    width: 50%;
+}
+
+.w-1\/3 {
+    width: 33.333333%;
+}
+
+.w-2\/3 {
+    width: 66.666667%;
+}
+
+.w-1\/5 {
+    width: 20%;
+}
+
+.w-2\/5 {
+    width: 40%;
+}
+
+.w-3\/5 {
+    width: 60%;
+}
+
+.w-4\/5 {
+    width: 80%;
+}
+
+.w-4em {
+  width: 4em;
+}
+
+.w-5em {
+  width: 5em;
+}
+
+.w-6em {
+  width: 6em;
+}
+
+.max-w-xs {
+    max-width: 20rem;
+}
+
+.max-w-32 {
+    max-width: 8rem;
+}
+
+.max-w-md {
+    max-width: 28rem;
+}
+
+/* スペーシング */
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-5 {
+    margin-bottom: 1.25rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.ml-1 {
+    margin-left: 0.25rem;
+}
+
+.ml-2 {
+    margin-left: 0.5rem;
+}
+
+.mr-1 {
+    margin-right: 0.25rem;
+}
+
+.mt-5 {
+    /* 元伝票番号ブロックの上端を、お届け予定ブロックの上端に近づける（添付ブロックの下端と重ならない範囲で） */
+    margin-top: 13px;
+}
+
+.my-2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.my-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* 配送業者・配送便種・未発送理由ブロックを13px上に */
+.delivery-agent-block {
+    padding-top: calc(1rem - 7px);
+}
+
+.p-1 {
+    padding: 0.25rem;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.p-3 {
+    padding: 0.75rem;
+}
+
+.p-5 {
+    padding: 1.25rem;
+}
+
+.px-2 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.px-4 {
+    padding-left: 1rem; 
+    padding-right: 1rem;
+}
+
+.py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.py-5 {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+.pt-3 {
+    padding-top: 0.75rem;
+}
+
+.pb-1 {
+    padding-bottom: 0.25rem;
+}
+
+.pb-3 {
+    padding-bottom: 0.75rem;
+}
+
+.pb-5 {
+    padding-bottom: 1.25rem;
+}
+
+.pl-2 {
+    padding-left: 0.5rem;
+}
+
+.pl-4 {
+    padding-left: 1rem;
+}
+
+.pl-1 {
+    padding-left: 0.25rem;
+}
+
+.pr-1 {
+    padding-right: 0.25rem;
+}
+
+.pr-2 {
+    padding-right: 0.5rem;
+}
+
+.pr-3 {
+    padding-right: 0.75rem;
+}
+
+.pr-15 {
+    padding-right: 3.75rem;
+}
+
+
+/* 背景色 */
+.bg-white {
+    background-color: #ffffff;
+}
+
+.bg-black {
+    background-color: #111111;
+}
+
+.bg-blue-50 {
+    background-color: #ffffff;
+}
+
+.bg-blue-200 {
+    background-color: #ffffff;
+}
+
+.bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.bg-blue-400 {
+    background-color: #60a5fa;
+}
+
+.bg-red-500 {
+    background-color: #ef4444;
+}
+
+/* テキスト色 */
+.text-white {
+    color: #ffffff;
+}
+
+.text-red {
+    color: #ED1A3D;
+}
+
+/* テキストサイズ */
+.text-lg {
+    font-size: 18px;
+}
+
+.text-base {
+    font-size: 16px;
+}
+
+.text-sm {
+    font-size: 14px;
+}
+
+.text-xs {
+    font-size: 12px;
+}
+
+.text-2xs {
+    font-size: 10px;
+}
+
+.text-base{
+    font-size: 16px;
+}
+
+.text-lg {
+    font-size: 18px;
+}
+
+.text-2xl {
+    font-size: 24px;
+}
+
+/* フォントウェイト */
+.font-medium {
+    font-weight: 500;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+
+/* テキスト配置 */
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+
+/* ボーダー */
+.border {
+    border-width: 1.5px;
+    border-style: solid;
+}
+
+.border-all {
+    border-width: 1.5px;
+    border-style: solid;
+}
+
+
+.border-b {
+    border-bottom-width: 1.5px;
+    border-bottom-style: solid;
+}
+
+.border-r {
+    border-right-width: 1.5px;
+    border-right-style: solid;
+}
+
+.border-t {
+    border-top-width: 1.5px;
+    border-top-style: solid;
+}
+
+.border-l {
+    border-left-width: 1.5px;
+    border-left-style: solid;
+}
+
+.border-blue-500 {
+    border-color: #111111;
+}
+
+.border-gray-200 {
+    border-color: #e5e7eb;
+}
+
+.border-gray-300 {
+    border-color: rgba(209, 213, 219, 0.5);
+}
+
+.border-gray-400 {
+    border-color: rgb(156 163 175 / var(--tw-border-opacity, 1));
+}
+
+.border-gray-500 {
+    border-color: rgb(107 114 128 / var(--tw-border-opacity, 1));
+}
+
+/* 角丸 */
+.rounded {
+    border-radius: 0.25rem;
+}
+
+.rounded-r {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.rounded-t {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+/* スペース */
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.space-y-5 {
+    margin-top: 1.25rem;
+}
+
+/* テーブルスタイル */
+table {
+    width: 100%;             /*横幅いっぱいに広げる */
+    /*table-layout: fixed;       中身に応じて幅を変える設定 */
+    border-collapse: collapse;
+}
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+.table-auto {
+    table-layout: auto;
+}
+
+th, td {
+    padding: 0.5rem;
+}
+
+/* リンクスタイル */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+.vertical {
+    line-height: 1em;
+    text-align: center;
+}
+
+.vertical span {
+display: block;
+}
+
+    /* ページブレーク制御 */
+@page {
+    size: A4;
+    margin: 5mm;
+}
+h1, h2, h3, table {
+    page-break-before: auto;
+    page-break-after: auto;
+    page-break-inside: avoid;  /* 途中で分断されないようにする */
+}
+
+/* 影　
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0 0 0 / 0.05);
+}
+
+.shadow {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+} */
+
+/* 影の色 */
+.shadow-gray-300 {
+    --tw-shadow-color: #d1d5db;
+}
+
+.translate-y-8 {
+    transform: translateX(2rem);
+}
+
+.no-split {
+  break-inside: avoid;
+  /* 古いブラウザや一部のPDF変換エンジン用（念のため） */
+  page-break-inside: avoid;
+}
+
+.break-inside-avoid {
+    break-inside: avoid;
+}
+
+.col-w-15 {
+  /* 幅の固定 */
+  width: 15em !important;
+  min-width: 15em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 15em ; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-12 {
+  /* 幅の固定 */
+  width: 12em !important;
+  min-width: 12em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 12em ; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-10 {
+  /* 幅の固定 */
+  width: 10em !important;
+  min-width: 10em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 10em ; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-9 {
+  /* 幅の固定 */
+  width: 9em !important;
+  min-width: 9em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 9em ; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-8 {
+  /* 幅の固定 */
+  width: 8em !important;
+  min-width: 8em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 8em ; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-6 {
+  /* 幅の固定 */
+  width: 6em !important;
+  min-width: 6em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 6em !important; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-5 {
+  /* 幅の固定 */
+  width: 5em !important;
+  min-width: 5em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 5em !important; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-4 {
+  /* 幅の固定 */
+  width: 4em !important;
+  min-width: 4em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 4em !important; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-3 {
+  /* 幅の固定 */
+  width: 3em !important;
+  min-width: 3em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 3em !important; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-w-2 {
+  /* 幅の固定 */
+  width: 2em !important;
+  min-width: 2em !important; /* PDF出力時に縮むのを防ぐ */
+  max-width: 2em !important; /* 逆に広がりすぎるのを防ぐ */
+
+  /* 文字の制御（はみ出し対策） */
+  white-space: normal !important;
+  word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.col-auto {
+    width: auto;
+    text-align: left;
+    vertical-align: top;
+}
+
+.col-data {
+  width: auto;
+  word-break: break-all;      /* 枠の端で問答無用で切る */
+  overflow-wrap: anywhere;    /* 最新のブラウザ・PDFエンジン向けの強力な改行 */
+  white-space: normal !important;
+}
+
+td {
+    /* 文字の制御（はみ出し対策） */
+    white-space: normal !important;
+    word-break: break-all !important;     /* 枠の端で強制改行 */
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;   /* 折り返しを許可 */
+  gap: 8px;         /* すき間 */
+}
+
+.wrapper > * {
+  width: calc(50% - 8px); /* gapを考慮して約2列に */
+}
+
+.line-height-1{
+    line-height: 1;
+}
+
+
+.line-height-1\.75 {
+    line-height: 1.75;
+}
+
+.line-height-1\.75_2line {
+    height: 3.5em;
+}
+
+.text-align-top-left {
+    text-align: left;      /* 水平方向：左寄せ */
+    vertical-align: top;   /* 垂直方向：上寄せ */
+}
+
+.grid_cols_2_15_85 {
+  display: grid;
+  grid-template-columns: 15% 85%;
+}
+
+.grid_cols_2_85_15 {
+  display: grid;
+  grid-template-columns: 85% 15%;
+}
+
+.grid_cols_2_35_65 {
+  display: grid;
+  grid-template-columns: 35% 65%;
+}
+
+.grid_cols_2_25_70 {
+  display: grid;
+  grid-template-columns: 25% 75%;
+}
+
+.grid_row_2 {
+    display: grid;
+    grid-template-rows: auto auto;
+}
+
+.grid_row_3 {
+    display: grid;
+    grid-template-rows: auto auto auto;
+}
+
+.custom-grid-layout_3_3_2 {
+  display: grid;
+  /* 3:3:2 の比率で3つの列を作成 */
+  grid-template-columns: 3fr 3fr 2fr;
+  width: 100%;
+  gap: 0;
+}
+
+.custom-column-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* お届け予定・時間帯・送料：時間帯と送料の間にギャップを設け、送料を広くする */
+/* 注意: CSS Grid + %指定はWeasyPrintで計算がずれるため、display:flexと絶対px幅の組み合わせに変更 */
+.haisiji-soryo-block.custom-grid-layout_3_3_2 {
+    display: flex;
+}
+
+.haisiji-soryo-block .custom-column-wrapper {
+    flex: 0 0 auto;
+}
+
+.haisiji-soryo-block .custom-column-wrapper:nth-child(1),
+.haisiji-soryo-block .custom-column-wrapper:nth-child(2) {
+    width: 90px;
+}
+
+.haisiji-soryo-block .custom-column-wrapper:last-child {
+    width: 56px;
+    margin-left: 10px;
+}
+
+.haisiji-soryo-block .custom-column-wrapper:last-child .value-box {
+    text-align: right;
+}
+
+/* お届け予定・時間帯のヘッダの区切り線を白色にする */
+.haisiji-soryo-block .custom-column-wrapper:nth-child(1) .label-box {
+    border-right-color: #ffffff;
+}
+
+.haisiji-soryo-block .custom-column-wrapper:nth-child(2) .label-box {
+    border-left-color: #ffffff;
+}
+
+.label-box {
+    border: 1.5px solid #111111;
+    flex: 1;
+    display: flex;
+    align-items: center;      /* 垂直方向（上下）の中央揃え */
+    justify-content: center;   /* 水平方向（左右）の中央揃え ※必要なければ削除 */
+
+    /* --- 空白を狭くする設定 --- */
+    padding: 1px 2px;         /* 上下 1px、左右 2px に変更（お好みで調整） */
+    line-height: 1.1;         /* 行間を詰めることで、上下の余白をさらに削減 */
+    min-height: 1.2em;        /* 文字がなくても高さが潰れすぎないように設定 */
+    margin-bottom: -1.5px; /* 下の要素と重ねる */
+    margin-right: -1.5px;  /* 右の要素と重ねる */
+}
+
+.value-box {
+    border: 1.5px solid #111111;
+    padding: 3px;
+    flex: 1;
+    margin-bottom: -1.5px; /* 下の要素と重ねる */
+    margin-right: -1.5px;  /* 右の要素と重ねる */
+}
+
+.label-box.border-blue-500,
+.value-box.border-blue-500 {
+    border-color: #111111;
+}
+
+/* 添付・メモ・作業指示・のし：罫線を1pxだけ重ねてヘアラインを防ぐ */
+.attach-memo-block .grid_cols_2_15_85 {
+    grid-template-columns: 16% 84%; /* ヘッダー列を20%の80%に縮小 */
+}
+
+.attach-memo-block .grid_cols_2_15_85 > p {
+    border: 1.5px solid #111111;
+    padding: 4px 2px 0 2px; /* 合計は.cellと同じ4pxのまま、上下の偏りを補正 */
+    margin-bottom: -1.5px;
+}
+
+.attach-memo-block .grid_cols_2_15_85 > p:last-child {
+    margin-left: -1.5px;
+}
+
+.attach-memo-block .grid_cols_2_15_85 > p:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.table_container {
+    display: grid;
+    grid-template-columns: 6.5fr 6.5fr 3fr;
+    gap: 5px;
+    width: 100%;
+    /* 左端に寄せる */
+    justify-content: start;
+}
+
+.table_collect {
+    display: table;       /* 値が縦に並ぶのを防ぐ */
+    width: 100%;
+    table-layout: fixed;  /* 幅を固定して重なりを防ぐ */
+    border-collapse: collapse;
+}
+
+.table_collect td, .table_collect th {
+    border: 1px solid #ccc;
+    word-break: break-all;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: var(--lines, 3);
+  min-height: calc(var(--lh, 1.25em) * var(--lines, 3));
+  line-height: var(--lh, 1.25em);
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: var(--lines, 4);
+  min-height: calc(var(--lh, 1.25em) * var(--lines, 4));
+  line-height: var(--lh, 1.25em);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: var(--lines, 2);
+  min-height: calc(var(--lh, 1.25em) * var(--lines, 2));
+  line-height: var(--lh, 1.25em);
+}
+
+.line-clamp-6 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: var(--lines, 6);
+  min-height: calc(var(--lh, 1.25em) * var(--lines, 6));
+  line-height: var(--lh, 1.25em);
+}
+
+.text_align_center {
+    /* 上下中央にするための設定 */
+    display: flex;
+    flex-direction: column;   /* 中身を縦に並べる */
+    justify-content: center;  /* 縦方向の中央寄せ */
+    align-items: center;      /* 横方向の中央寄せ */
+}
+
+.table-border, .table-border th, .table-border td, .table-border caption {
+    border: 1.5px solid;
+    border-collapse: collapse;
+}
+
+.table-border caption {
+    border-bottom: none;
+}
+
+.table-border th.no-border-t,
+.table-border td.no-border-t,
+table.table-border.no-border-t {
+    border-top: none !important;
+}
+
+.table-border th.no-border-r,
+.table-border td.no-border-r,
+table.table-border.no-border-r {
+    border-right: none !important;
+}
+
+.table-border th.no-border-b,
+.table-border td.no-border-b,
+table.table-border.no-border-b {
+    border-bottom: none !important;
+}
+
+.table-border th.no-border-l,
+.table-border td.no-border-l,
+table.table-border.no-border-l {
+    border-left: none !important;
+}
+
+.table-border th, .table-border td {
+    padding: 8px;
+}
+
+.cell-pad th,
+.cell-pad td {
+    padding: 2px !important;
+}
+
+.table-border th.border-blue-500,
+.table-border td.border-blue-500 {
+    border-color: #111111;
+}
+
+.product-name {
+    line-height: 1;      /* 1行の高さを1倍に設定（読みやすい標準） */
+    height: 3em;         /* 1 × 3行 = 3em */
+}
+
+.underline {
+    text-decoration-line: underline;
+}
+
+/* 親要素：border-left を削除 */
+.custom-grid-table {
+    display: table;
+    width: 100%;
+    /* 境界線を重ねて1本に見せる（重要） */
+    border-collapse: collapse;
+    /* 親要素で「上」と「左」の枠を確保する */
+    border-top: 1.5px solid #111111;
+    border-left: 1.5px solid #111111;
+    table-layout: fixed;
+}
+
+.table-row {
+    display: table-row;
+}
+
+/* セル共通：左線を個別に追加 */
+.cell {
+    display: table-cell;
+    padding: 2px;
+    /* 各セルは「右」と「下」に線を引く */
+    border-right: 1.5px solid #111111;
+    border-bottom: 1.5px solid #111111;
+    vertical-align: middle;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+/* --- ラベル（左側）の幅 --- */
+.label {
+    width: 45%;
+    font-weight: 600;
+    background-color: #ffffff; /* 背景色をつけても線は消えません */
+}
+
+/* --- 値（右側）の幅 --- */
+.value {
+    width: 55%;
+}
+
+.cell p {
+    margin: 0;
+}
+
+.title-date-layout {
+    display: grid;
+    grid-template-columns: auto 5fr auto;
+}
+
+/* お届け先・ご依頼主・品名：3ブロックを1つのグリッドにまとめ、境界線を1本の連続した線にする。
+   区切り線は実線のborderで描画する（gapに透ける背景色の塗りつぶしは、Adobe Readerなど一部
+   ビューアで特定の表示倍率のとき薄すぎて消えることがあるため使わない） */
+.left-column-grid {
+    display: grid;
+    grid-template-columns: 15px 1fr;
+    border: 1.5px solid #111111;
+    margin-bottom: 12px;
+}
+
+.left-grid-label,
+.left-grid-data {
+    margin: 0;
+    padding: 0;
+}
+
+/* お届け先・ご依頼主：品名(セル側で個別に余白を持つ)と揃えて、データ全体に上下左右の余白を持たせる */
+.left-grid-data-padded {
+    padding: 2px;
+}
+
+/* ラベル列とデータ列の区切り線 */
+.left-grid-label {
+    border-right: 1.5px solid #111111;
+}
+
+/* お届け先・ご依頼主・品名のラベル文字を左端から1pxずらす */
+.left-grid-label.vertical span {
+    position: relative;
+    left: 1px;
+}
+
+/* お届け先・ご依頼主の行の下側の区切り線（品名の行はブロック外枠が下端を兼ねるため不要） */
+.left-column-grid > *:nth-child(-n + 4) {
+    border-bottom: 1.5px solid #111111;
+}
+
+/* 品名内部（商品名/数量の行区切り・列区切り）：divの個別borderではなくtable+border-collapseで
+   1本の連続した罫線として描画し、ヘアライン消失を防ぐ（他の箇所と同じ手法に統一） */
+.product-name-table {
+    border-collapse: collapse;
+}
+
+.product-name-table th,
+.product-name-table td {
+    padding: 2px;
+}
+
+.product-name-cell {
+    line-height: 1;
+    /* 品名/商品コード・記号で2行。上下2pxずつの余白分だけ高さを広げる */
+    height: calc(2em + 4px);
+    vertical-align: top;
+}
+
+.gap-1 {
+    gap: 0.25rem;
+}
+
+.break-all {
+    word-break: break-all;
+}
+
+.grid-cols-6_1_3 {
+    grid-template-columns: 6fr 1fr 3fr;
+}
+
+.grid-cols-3_7 {
+    grid-template-columns: 3fr 7fr;
+}
+
+.grid-cols-4_6 {
+    grid-template-columns: 4fr 6fr;
+}
+
+.left-item {
+  grid-column: 1; /* 1番目のエリア（6fr）に配置 */
+}
+
+.right-item {
+  grid-column: 2 / 4; /* 中央の余白（1fr）と3番目のエリア（3fr）をまたいで配置し、左に広げる */
+  margin-left: 10px; /* 戻り品発生日・理由ブロックとの間に10pxの余白を確保（その分幅は狭くなる） */
+}
+
+.process_container {
+  display: flex; /* 横並びにする */
+  justify-content: space-between;
+  width: 100%;   /* 全体幅（必要に応じて調整） */
+}
+
+.process_box-left {
+  width: 23%;      /* 比率の「3」を指定 */
+  height: 100%;
+}
+
+.process_box-right {
+  width: 72%;       /* 比率の「6」を指定（flex: 2 と書いても同じです） */
+  height: 100%;
+  margin-right: 0.9px; /* ページ右端ぎりぎりで罫線が欠けるのを防ぐ（justify-content:space-betweenは幅を変えても右端が動かないため） */
+  /* 外枠は行ごとに別々の要素が線を引くと太さがばらつくため、この外枠1本にまとめる */
+  border: 3px solid #111111;
+}
+
+.grid-cols_container {
+    /* grid+frトラックだとラベル列とデータ列の境界計算がずれ、データ列が右端をはみ出す
+       (WeasyPrint起因)ため、flexに変更してデータ列を確実に残り幅ぴったりに収める */
+    display: flex;
+}
+
+.grid-cols_container > :first-child {
+    flex: 0 0 auto;
+}
+
+.grid-cols_container > :last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.border-dashed {
+  border-bottom: 1px dashed #333; /* 1pxの太さ / 破線 / 色（黒系） */
+}
+
+.text-2-5lines {
+  height: 2.5lh; 
+}
+
+.text-2lines {
+  height: 2lh; 
+}
+
+.text-1-5lines {
+  height: 1.5lh; 
+}
+
+.text-group-container {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    gap: 1px;
+}
+
+.text-group-container p {
+    margin: 0;
+    padding: 1px 2px; /* 上下2px、左右5px */
+    line-height: 1;
+}
+
+.border-bold-t {
+    border-top: 3px solid #333;
+}
+
+.border-bold-b {
+    border-bottom: 3px solid #333;
+}
+
+.border-bold-r {
+    border-right: 3px solid #333;
+}
+
+.border-bold-l {
+    border-left: 3px solid #333;
+}
+
+.text-center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+    font-weight: 900;
+    
+    /* 「具体的な数値」ではなく「画面の縦幅100%分」という指定 */
+    min-height: 100dvh;
+}
+
+.text-center-container p {
+  margin: 0;
+}
+
+.arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.arrow.-right{
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 20px solid #000;
+    border-right: 0;
+}
+
+.postal-area {
+  display: flex;
+  justify-content: center; /* 左右の中央揃え */
+  align-items: center;     /* 縦の中央揃え */
+  
+  /* 【超重要】隣のflexに押しつぶされるのを防ぐ新兵器 */
+  flex-shrink: 0;  
+}
+
+.postal-area .hyphen {
+  font-size: 20px;       
+  font-weight: bold;     
+  color: #000000;        
+  line-height: 1.5; 
+  position: relative; top: 6px;
+}
+
+.phone-area {
+  display: flex;
+  justify-content: flex-start; /* 左寄せ */
+  align-items: center;         /* 縦の中央揃え */
+  
+  /* 【超重要】隣のflexに押しつぶされるのを防ぐ新兵器 */
+  flex-shrink: 0; 
+}
+
+.phone-area .phone-format {
+  font-size: 20px;       
+  font-weight: bold;     
+  color: #000000;           
+  letter-spacing: 2px;   
+  line-height: 1.5;
+  position: relative; top: 7px;
+}
+
+.text-align-buttom-right {
+    display: grid;
+    align-content: end;  /* 縦方向：一番下へ */
+    text-align: right;   /* 横方向：右寄せへ */
+    width: 100%;
+    height: calc(1em * 1.5 * 2);
+    height: 2lh;
+}
+
+.center-box-flex {
+    display: flex;
+    justify-content: center; /* 横方向の真ん中 */
+    align-items: center;     /* 縦方向の真ん中 */
+
+    /* こちらも高さの指定が必要です */
+    height: calc(1em * 1.5 * 2); /* 最後の「* 2」を「* 1」に変更 */
+    height: 2lh;
+}
+.border-box  {
+    box-sizing: border-box;
+}
