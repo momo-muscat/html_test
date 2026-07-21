@@ -1,0 +1,72 @@
+{% macro crud_buttons(request, link_list=None) %}
+<div class="flex gap-2 mb-6 font-semibold text-center">
+    {% for link in link_list %}
+    <a href="{{ link.url }}"
+        class="w-32 px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if request.path == link.url else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+        {{ link.label }}
+    </a>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro crud_buttons_with_mode(request, link_list=None) %}
+<div class="flex gap-2 mb-6 font-semibold text-center">
+    {% for link in link_list %}
+    <a href="{{ link.url }}?mode={{ link.mode }}"
+        class="w-32 px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if request.GET.get('mode') == link.mode else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+        {{ link.label }}
+    </a>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro crud_buttons_two_modes(request, base_url, mode1="initial", mode2="initial", mode1_links=None, mode2_links=None) %}
+<div class="mb-6 font-semibold text-center">
+    <div class="flex gap-2 mb-2">
+        {% for link in mode1_links %}
+        <a href="{{ base_url }}?mode1={{ link.mode }}&mode2=initial"
+            class="w-32 px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if mode1 == link.mode else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+            {{ link.label }}
+        </a>
+        {% endfor %}
+    </div>
+    <div class="flex gap-2">
+        {% for link in mode2_links %}
+        {% set is_disabled = mode1 == 'initial' or (mode1 == 'delivered' and link.mode == 'update') %}
+        {% if not is_disabled %}
+        <a href="{{ base_url }}?mode1={{ mode1 }}&mode2={{ link.mode }}"
+            class="w-32 px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if mode2 == link.mode else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+            {{ link.label }}
+        </a>
+        {% else %}
+        <button type="button"
+            class="w-32 px-4 py-2 rounded-xl bg-gray-500 text-white opacity-60 cursor-not-allowed"
+            disabled>
+            {{ link.label }}
+        </button>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro crud_buttons_dummy_mode(request, link_list=None) %}
+<div class="flex gap-2 mb-6 font-semibold text-center">
+    {% for link in link_list %}
+        <button class="w-32 px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if request.path == link.url else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+            {{ link.label }}
+        </button>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro crud_buttons_flex(request, link_list=None) %}
+<div class="flex gap-2 mb-6 font-semibold text-center">
+    {% for link in link_list %}
+    <a href="{{ link.url }}"
+        class="px-4 py-2 rounded-xl {{ 'bg-emerald-600 text-white' if request.path == link.url else 'bg-gray-600 text-white hover:bg-emerald-700 shadow-md hover:shadow-none' }}">
+        {{ link.label }}
+    </a>
+    {% endfor %}
+</div>
+{% endmacro %}

@@ -1,0 +1,987 @@
+{% extends 'layout.html' %}
+{% import "macros/buttons.html" as btn %}
+{% block head_title %}{{ head_title }}{% endblock %}
+
+{% block main %}
+{% if object %}
+
+<!-- 鶴屋 -->
+{% if company_ctx.company_cd == TSURUYA_CD %}
+<!-- タイトル -->
+<div class="grid grid-cols-3 items-center w-full">
+    <h2 class="mb-4 text-xl text-left font-bold">
+        {{ head_title if head_title }}
+    </h2>
+    {% if object["del_flg"] == 1 %}
+        <h3 class="mb-4 text-center text-base text-red-500 font-medium">この伝票は削除されています。</h3>
+    {% endif %}
+    <div></div>
+</div>
+
+<!-- topボタン -->
+<div class="mb-6 flex">
+    <table class="ml-4" id="top-button">
+        <tr>
+            <!-- 前画面へ戻る -->
+            <td class="w-44 text-center align-middle" id="top-button-back">
+                {% if app_name == "slip_search" %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('slip_search:list') ~ '?' ~ prev_search_params, "sky") }}
+                {% elif juchubi and object["juchu_no"] %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('delivery_address:list', kwargs={'juchubi': juchubi, 'juchu_no': object["juchu_no"]}) ~ '?' ~ prev_search_params, "sky") }}
+                {% elif juchubi %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('delivery_address:list', kwargs={'juchubi': juchubi}) ~ '?' ~ prev_search_params, "sky") }}
+                {% endif %}
+            </td>
+            <td class="w-6"></td>
+            <td class="w-20 text-center align-middle">
+                {# 前へボタンのURLを組み立て #}
+                {% if prev_pk and prev_type %}
+                    {% if prev_type == 'S' %}
+                        {% set prev = url('slip_detail:sys_detail', kwargs={'pk':prev_pk}) %}
+                    {% else %}
+                        {% set prev = url('slip_detail:hand_detail', kwargs={'pk':prev_pk}) %}
+                    {% endif %}
+                    {% set prev_url = prev ~ '?' ~ search_params %}
+                    {{ btn.LinkBtn("前へ", prev_url, "sky") }}
+                {% endif %}
+            </td>
+            <!-- <td class="w-4"></td> -->
+            <td class="w-20 text-center align-middle">
+                {# 次へボタンのURLを組み立て #}
+                {% if search_params and next_pk %}
+                    {% if next_type == 'S' %}
+                        {% set next = url('slip_detail:sys_detail', kwargs={'pk':next_pk}) %}
+                    {% else %}
+                        {% set next = url('slip_detail:hand_detail', kwargs={'pk':next_pk}) %}
+                    {% endif %}
+                    {% set next_url = next ~ '?' ~ search_params %}
+                    {{ btn.LinkBtn("次へ", next_url, "sky") }}
+                {% endif %}
+            </td>
+            <td class="w-10"></td>
+        </tr>
+    </table>
+    <!-- アクションボタン（button_display=0 でも常に表示） -->
+    <table>
+        <tr>
+            <!-- 問合せ票出力 -->
+            <td class="w-32 text-center align-middle">
+                {% set current_url = url('slip_detail:sys_detail', kwargs={'pk': object.pk if object.pk else kwargs.get('pk')}) %}
+                {% set pdf_params = search_params ~ '&format=pdf' if search_params else 'format=pdf' %}
+                {% set pdf_url = current_url ~ '?' ~ pdf_params %}
+                {{ btn.LinkBtn("問合せ票出力", pdf_url, "green", "target='_blank' rel='noopener noreferrer'") }}
+            </td>
+            <!-- <td class="w-6"></td> -->
+            <!-- 業者HP -->
+            <td class="w-32 text-center align-middle">
+                {% if object["gyo_url"] and (object["gyo_url"].startswith("http://") or object["gyo_url"].startswith("https://")) %}
+                    {{ btn.LinkBtn("業者HP", object["gyo_url"], "green", "target='_blank' rel='noopener noreferrer'") }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="flex gap-10 mb-3 items-center">
+    <div class="flex flex-col items-start">
+        <div>配送業者名</div>
+        <p class="font-bold text-lg">{{ object["dengyosya_nm"] if object["dengyosya_nm"] else "" }}</p>
+    </div>
+    <div class="flex flex-col items-start">
+        {% if object["form_syubetu"] == 2 %}
+            <div>伝票番号(貴)</div>
+        {% else %}
+            <div>伝票番号</div>
+        {% endif %}
+        <p class="font-bold text-lg">{{ object["denno_display"] if object["denno_display"] else "" }}</p>
+    </div>
+    <div class="flex flex-col items-start">
+        <div>着店(仕分)コード</div>
+        <p class="font-bold text-lg">{{ object["tyaku_scd_display"] if object["tyaku_scd_display"] else "" }}</p>
+    </div>
+    <div class="flex flex-col items-start">
+        <div>フォーム種別</div>
+        <p class="font-bold text-lg">{{ object["form_syubetu_display"] if object["form_syubetu_display"] else "" }}</p>
+    </div>
+    <div class="flex flex-col items-start">
+        <div>お客様番号</div>
+        <p class="font-bold text-lg">{{ object["client_no"] if object["client_no"] else "" }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-[11fr_11fr_8fr] gap-4">
+    <!-- 左側 -->
+    <div>
+        <!-- お届け先 -->
+        <div class="bg-blue-600 flex">
+            <h4 class="font-semibold text_sm text-white text-center p-2 border border-blue-500 [writing-mode:vertical-rl]">お届け先</h4>
+            <div class="bg-white w-full border border-blue-500 -ml-px">
+                <table>
+                    <tbody>
+                        <tr>
+                            <div class="flex flex-col text_sm">
+                                <div class="flex flex-row pt-1 pr-4 pl-4">
+                                    <div class="flex flex-1 flex-row">
+                                        {% if object["todoke_yubin"]%}
+                                            <p>{{ object["todoke_yubin"] }}</p>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex flex-1 flex-row">
+                                        {% if object["todoke_tel"] %}
+                                            <p>{{ object["todoke_tel"] }}</p>
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="flex flex-row">
+                                    <div class="flex-1 flex flex-col text_sm pl-2">
+                                        <p>{% if object["todoke_ate1"] %}{{ object["todoke_ate1"] }}{% else %}&nbsp;</p>{% endif %}
+                                        <p>{% if object["todoke_ate2"] %}{{ object["todoke_ate2"] }}{% else %}&nbsp;</p>{% endif %}
+                                        <p>{% if object["todoke_ate3"] %}{{ object["todoke_ate3"] }}{% else %}&nbsp;</p>{% endif %}
+                                        <p>{% if object["todoke_ate4"] %}{{ object["todoke_ate4"] }}{% else %}&nbsp;</p>{% endif %}
+                                        <p>{% if object["todoke_ate5"] %}{{ object["todoke_ate5"] }}{% else %}&nbsp;</p>{% endif %}
+                                        <p>{% if object["todoke_ate6"] %}{{ object["todoke_ate6"] }}{% else %}&nbsp;</p>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- ご依頼主 -->
+        <div class="bg-white flex -mt-px">
+            <h4 class="font-semibold text_sm text-black text-center p-2 bg-blue-50 border border-blue-500 [writing-mode:vertical-rl]">ご依頼主</h4>
+            <div class="bg-white w-full border border-blue-500 -ml-px">
+                <table>
+                    <tbody>
+                        <tr>
+                            <div class="flex flex-col">
+                                <div class="flex flex-row pt-1 pr-4 pl-4">
+                                    <div class="flex flex-1 flex-row space-x-4 text_sm">
+                                        {% if object["jitaku_flg"] != 1 %}
+                                            {% if object["irai_yubin"] %}
+                                                <p>{{ object["irai_yubin"] }}</p>
+                                            {% else %}
+                                                <p>&nbsp;</p>
+                                            {% endif %}
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex flex-1 flex-row space-x-4 text_sm">
+                                        {% if object["jitaku_flg"] != 1 %}
+                                            {% if object["h_irai_tel"] %}
+                                                <p>{{ object["h_irai_tel"] }}</p>
+                                            {% else %}
+                                                <p>&nbsp;</p>
+                                            {% endif %}
+                                        {% else %}
+                                            <p>&nbsp;</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="flex flex-row">
+                                    <div class="flex-1 flex flex-col text_sm pl-2">
+                                        <p>{% if object["irai_ate1"] %}{{ object["irai_ate1"] }}{% else %}&nbsp;{% endif %}</p>
+                                        <p>{% if object["irai_ate2"] %}{{ object["irai_ate2"] }}{% else %}&nbsp;{% endif %}</p>
+                                        <p>{% if object["irai_ate3"] %}{{ object["irai_ate3"] }}{% else %}&nbsp;{% endif %}</p>
+                                        <p>{% if object["irai_ate4"] %}{{ object["irai_ate4"] }}{% else %}&nbsp;{% endif %}</p>
+                                        <p>{% if object["irai_ate5"] %}{{ object["irai_ate5"] }}{% else %}&nbsp;{% endif %}</p>
+                                        <p>{% if object["irai_ate6"] %}{{ object["irai_ate6"] }}{% else %}&nbsp;{% endif %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 品名 -->
+        <div class="bg-white mb-3 flex -mt-px">
+            <h4 class="font-semibold text_sm text-black text-center p-2 bg-blue-50 border border-blue-500 [writing-mode:vertical-rl]">品名</h4>
+            <div class="bg-white w-full text_sm">
+                {% if object["h_den_syubetu"] == 3 %}
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名1 -->
+                        <div class="border-t border-r border-b border-blue-500 px-2 py-1">
+                            {% set koguti_su = object.koguti_su | default(0, true) %}
+                            {% set koguti = object.koguti | default(0, true) %}
+                            <p>{{ koguti_su + 1 }} 個口の {{ koguti + 1 }} 個目</p>
+                            <p>&nbsp;</p>
+                        </div>
+                        <!-- 数量1 -->
+                        <div class="border-t border-r border-b border-blue-500 px-2 py-1">
+                            <span class="text-center">数量</span>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名2 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                        </div>
+                        <!-- 数量2 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            <span class="text-center">数量</span>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名3 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            <p>&nbsp;</p>
+                            <p>&nbsp;</p>
+                        </div>
+                        <!-- 数量3 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            <span class="text-center">数量</span>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名1 -->
+                        <div class="border-t border-r border-b border-blue-500 px-2 py-1">
+                            {% if den_m_tbl[0] %}
+                                <p>{{ den_m_tbl[0].hinmei }}</p>
+                                <div class="grid grid-cols-[3fr_5fr] gap-3">
+                                    <p>{{ den_m_tbl[0].gcode_irosize }}</p>
+                                    <p>{{ den_m_tbl[0].hinkigou }}</p>
+                                </div>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                        <!-- 数量1 -->
+                        <div class="border-t border-r border-b border-blue-500 text-right px-2 py-1">
+                            <span class="text-center">数量</span>
+                            {% if den_m_tbl[0] %}
+                                <p>{{ den_m_tbl[0].suryo }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名2 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            {% if den_m_tbl[1] %}
+                                <p>{{ den_m_tbl[1].hinmei }}</p>
+                                <div class="grid grid-cols-[3fr_5fr] gap-3">
+                                    <p>{{ den_m_tbl[1].gcode_irosize }}</p>
+                                    <p>{{ den_m_tbl[1].hinkigou }}</p>
+                                </div>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                        <!-- 数量2 -->
+                        <div class="border-r border-b border-blue-500 text-right px-2 py-1">
+                            <span class="text-center">数量</span>
+                            {% if den_m_tbl[1] %}
+                                <p>{{ den_m_tbl[1].suryo }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[85%_15%]">
+                        <!-- 品名3 -->
+                        <div class="border-r border-b border-blue-500 px-2 py-1">
+                            {% if den_m_tbl[2] %}
+                                <p>{{ den_m_tbl[2].hinmei }}</p>
+                                <div class="grid grid-cols-[3fr_5fr] gap-3">
+                                    <p>{{ den_m_tbl[2].gcode_irosize }}</p>
+                                    <p>{{ den_m_tbl[2].hinkigou }}</p>
+                                </div>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                        <!-- 数量3 -->
+                        <div class="border-r border-b border-blue-500 text-right px-2 py-1">
+                            <span class="text-center">数量</span>
+                            {% if den_m_tbl[2] %}
+                                <p>{{ den_m_tbl[2].suryo }}</p>
+                            {% else %}
+                                <p>&nbsp;</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- 中央 -->
+    <div>
+        <!-- 受注情報 -->
+        <div class="pb-3">
+            <table class="text_sm bg-white text-left w-full">
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">お届け先番号</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["todoke_id"] %}
+                            <p>{{ object["todoke_id"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">受注日</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["juchu_ymd_format"] %}
+                            <p>{{ object["juchu_ymd_format"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">受注店</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["h_mise_nm"] %}
+                            <p>{{ object["h_mise_nm"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">受注部門</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["h_bumon_nm"] %}
+                            <p>{{ object["h_bumon_nm"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">受注係員</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["h_kakari_nm"] %}
+                            <p>{{ object["h_kakari_nm"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">受注係員連絡先</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["bumon_tel"] %}
+                            <p>{{ object["bumon_tel"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">伝票発行日時</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["den_out_ymd_format"] %}
+                            <p>{{ object["den_out_ymd_format"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">伝票発行場所</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        {% if object["den_out_nm"] %}
+                            <p>{{ object["den_out_nm"] }}</p>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- お届け予定日・時間帯お届け・送料 -->
+        <div class="grid grid-cols-[3.8fr_3.8fr_1.5fr]">
+            <!-- お届け予定（指定）日 -->
+            <div class="text-center bg-white">
+                <div class="border border-blue-500 bg-blue-600 text-white px-2 py-1">
+                    <span class="inline-block leading-none font-semibold text_sm">お届け予定(指定)日</span>
+                </div>
+                {% if object["haisiji_day_format"]  %}
+                    <p class="border border-blue-500 -mt-px px-2 py-1">{{ object["haisiji_day_format"] }}</p>
+                {% else %}
+                    <p class="border border-blue-500 -mt-px px-2 py-1">&nbsp;</p>
+                {% endif %}
+            </div>
+            <!-- 時間帯お届け -->
+            <div class="text-center mr-4 bg-white -ml-px">
+                <div class="border border-blue-500 bg-blue-600 text-white px-2 py-1">
+                    <span class="inline-block leading-none font-semibold text_sm">時間帯お届け</span>
+                </div>
+                {% if object["haisiji2_nm"] %}
+                    <p class="border border-blue-500 -mt-px px-2 py-1">{{ object["haisiji2_nm"] }}</p>
+                {% else %}
+                    <p class="border border-blue-500 -mt-px px-2 py-1">&nbsp;</p>
+                {% endif %}
+            </div>
+            <!-- 送料 -->
+            <div class="text-center bg-white">
+                <div class="bg-blue-50 border border-blue-500 px-2 py-1">
+                    <span class="text-center font-semibold text_sm">送料</span>
+                </div>
+                <!-- 3桁のカンマ区切り -->
+                <p class="text-right border border-blue-500 -mt-px px-2 py-1">{{ "{:,.0f}".format(object["soryo"]) }}</p>
+            </div>
+        </div>
+        <!-- 配送業者・配送便種・未発送理由 -->
+        <div class="w-full pb-3 pt-5">
+            <table class="text_sm bg-white text-left w-full">
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">配送業者</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        <p>{% if object["hai_gyosya_nm"] %}{{ object["hai_gyosya_nm"] }} {% else %}&nbsp;{% endif %}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">配送便種</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        <p>{% if object["haibin_nm"] %}{{ object["haibin_nm"] }}{% else %}&nbsp;{% endif %}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="w-[33%] px-2 py-1 font-semibold bg-blue-50 border border-blue-500">未発送理由</th>
+                    <td class="w-[67%] px-2 py-1 border border-blue-500 break-all">
+                        <p>{% if object["hassou_nm"] or object["shipping_maintenance_memo"] %}{{ object["hassou_nm"] }}<br>{{ object["shipping_maintenance_memo"] }}{% else %}&nbsp;{% endif %}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!-- 右側 -->
+    <div>
+        <!-- 添付・メモ・作業指示・のし -->
+        <div class="mb-3">
+            <table class="w-full table-fixed border-collapse text_sm">
+                <colgroup>
+                    <col class="w-[20%]" />
+                    <col class="w-[80%]" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">添付</td>
+                        <td class="border border-blue-500 px-2 py-1 align-top">{{ object["tenpu_nm"] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">メモ</td>
+                        <td class="border border-blue-500 px-2 py-1 align-top">{{ object["haisou_memo"] }}<br>{{ object["hosou_memo"] }}<br>{{ object["irai_memo"] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">作業<br>指示</td>
+                        <td class="border border-blue-500 px-2 py-1 align-top">{{ object["hosou_nm"] }}<br>{{ object["nosi_nm"] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">のし</td>
+                        <td class="border border-blue-500 px-2 py-1 align-top">{{ object["youto_nm"] }}<br>{{ object["nosi1_nm"] }}<br>{{ object["nosi2_nm"] }}<br>{{ object["nosi3_nm"] }}<br>{{ object["nosi4_nm"] }}<br>{{ object["nosi5_nm"] }}<br>{{ object["nosi6_nm"] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 元伝票番号・事故・再発行伝票番号 -->
+        <div class="mb-3">
+            <table class="w-full table-fixed border-collapse text_sm">
+                <colgroup>
+                    <col class="w-[40%]" />
+                    <col class="w-[60%]" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">元伝票番号</td>
+                        <td class="border border-blue-500 px-3 py-1 align-top font-bold">
+                            {% if object["moto_denno_pk"] and object["moto_denno_type"]%}
+                                {% if object["moto_denno_type"] == "S" %}
+                                    <!-- システム伝票 -->
+                                    {% set moto_denno_url = url('slip_detail:sys_detail', kwargs={'pk': object["moto_denno_pk"]}) ~ '?' ~ 'search1=' ~ object["moto_denno"]  ~ '&button_display=0' %}
+                                    <a href="{{ moto_denno_url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        data-value="{{ object['moto_denno'] }}"
+                                        class="slip_num inline-block mx-auto w-full max-w-32 underline">
+                                        {{ object["moto_denno_display"] }}
+                                    </a>
+                                {% else %}
+                                    <!-- システム伝票以外 -->
+                                    {% set moto_denno_url = url('slip_detail:hand_detail', kwargs={'den_pk': object["moto_denno_pk"]}) ~ '?' ~ 'search1=' ~ object["moto_denno_display"]  ~ '&button_display=0' %}
+                                    <a href="{{ moto_denno_url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        data-value="{{ object['moto_denno'] }}"
+                                        class="slip_num inline-block mx-auto w-full max-w-32 underline">
+                                        {{ object["moto_denno_display"] }}
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <p class="pl-2">{{ object["moto_denno_display"] }}</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">事故</td>
+                        <td class="border border-blue-500 px-3 py-1 align-top font-bold">
+                            {% if object["jiko_flg"] != 0 %}
+                                <!-- 事故詳細ページへのリンクを追加 -->
+                                <a href="{{ url('accident_input:inquiry') }}?denno={{object['jiko_denno']}}"
+                                    onclick=""
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-red-500 underline underline-offset-3 decoration-black w-full text-center font-bold">
+                                    事故あり
+                                </a>
+                            {% else %}
+                                <p class="pl-2">&nbsp;</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 px-2 py-1 align-top font-bold bg-blue-50">再発行伝票番号</td>
+                        <td class="border border-blue-500 px-3 py-1 align-top font-bold">
+                            {% if reissue_slip_numbers %}
+                                {% for obj in reissue_slip_numbers %}
+                                    {% if obj.den_pk and obj.s_denno %}
+                                        {% if obj.den_type == "S" %}
+                                            <!-- システム伝票 -->
+                                            {% set slip_url = url('slip_detail:sys_detail', kwargs={'pk': obj.den_pk}) ~ '?' ~ 'search1=' ~ obj.s_denno  ~ '&button_display=0' %}
+                                            <a href="{{ slip_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                data-value="{{ obj.s_denno }}"
+                                                class="slip_num inline-block mx-auto text-black text_sm w-full max-w-32 underline">
+                                                {{ obj.s_denno_display }}
+                                            </a>
+                                        {% else %}
+                                            <!-- システム伝票以外 -->
+                                            {% set slip_url = url('slip_detail:hand_detail', kwargs={'pk': obj.den_pk}) ~ '?' ~ 'search1=' ~ obj.s_denno  ~ '&button_display=0' %}
+                                            <a href="{{ slip_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                data-value="{{ obj.s_denno }}"
+                                                class="slip_num inline-block mx-auto text-black text_sm w-full max-w-32 underline">
+                                                {{ obj.s_denno_display }}
+                                            </a>
+                                        {% endif %}
+                                    {% elif obj.s_denno %}
+                                        <!-- リンクなし -->
+                                        <p class="pl-2">{{ obj.s_denno_display }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <p class="pl-2">&nbsp;</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 代引き手数料・合計 -->
+        <div class="mt-3">
+            <table class="w-full table-fixed border-collapse text_sm">
+                <colgroup>
+                    <col class="w-[40%]" />
+                    <col class="w-[30%]" />
+                    <col class="w-[30%]" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="border border-blue-500 bg-blue-50 font-bold px-2 py-1 align-top">代引き手数料</td>
+                        <td class="border border-blue-500 text-right px-2 py-1 align-top">
+                            {{ "{:,.0f}".format(object["daihiki_tesu"] or 0) }}
+                        </td>
+                        <td class="px-2 py-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="border border-blue-500 bg-blue-50 font-bold px-2 py-1 align-top">合計</td>
+                        <td class="border border-blue-500 text-right px-2 py-1 align-top">
+                            {{ "{:,.0f}".format(object["total_gaku"] or 0) }}
+                        </td>
+                        <td class="px-2 py-1"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 出荷前履歴・配送状況・個口伝票 -->
+<div class="grid grid-cols-[11fr_11fr_8fr] gap-4 pb-3">
+    <!-- 出荷前履歴 -->
+    <table class="table-fixed w-full h-fit mb-3">
+        <caption class="text-left text_sm font-semibold pl-2 py-1 border-t border-l border-r border-blue-500 bg-blue-50">
+            出荷前履歴(社内履歴)
+        </caption>
+        <thead class="bg-white">
+            <tr>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">日時</th>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">状況</th>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">備考</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            {% for obj in pre_shipment_history %}
+            {% set kbn_mark = "→" if obj.data_kbn == 9 and obj.jokyo_kbn == 3 else "<br />" %}
+            <tr class="text_sm">
+                <td class="px-2 py-1 border border-blue-500">
+                    {{ obj.syori_ymd_format }}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">{{ obj.jokyo_nm }}</td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {{ obj.place1_nm }}{{ kbn_mark|safe if kbn_mark }}{{ obj.place2_nm }}
+                </td>
+            </tr>
+            {% else %}
+            <tr class="text_sm">
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 配送状況 -->
+    <table class="table-fixed w-full h-fit text_sm">
+        <caption class="text-left text_sm font-semibold pl-2 py-1 border-t border-l border-r border-blue-500 bg-blue-50">
+            配送状況(配送業者履歴)
+        </caption>
+        <thead class="bg-white text_sm">
+            <tr>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">日時</th>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">状況</th>
+                <th class="px-2 py-1 text-center text_sm font-semibold bg-blue-50 border border-blue-500">備考</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            {% for obj in delivery_situation %}
+            <tr class="text_sm">
+                <td class="px-2 py-1 border border-blue-500">
+                    {{ obj.jyotai_ymd_format }}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">{{ obj.datakbn_nm }}</td>
+                <td class="px-2 py-1 border border-blue-500">{{ obj.jyokyo_nm }}</td>
+            </tr>
+            {% else %}
+            <tr class="text_sm">
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- 個口伝票 -->
+    <div>
+        <table class="table-fixed w-59/100 h-fit">
+            <caption class="text-left text_sm font-semibold pl-2 py-1 border-t border-l border-r border-blue-500 bg-blue-50">
+                個口伝票
+            </caption>
+            <tbody class="bg-white text_sm">
+                {% for obj in package_slip_numbers %}
+                    {% if loop.first %}
+                        {% if obj.den_pk and obj.denno_display %}
+                            {% if obj.denno %}
+                                {% if obj.denno_display != object["denno_display"] %}
+                                    {% if obj.den_type == "S" %}
+                                        <!-- システム伝票 -->
+                                        <tr>
+                                            <td class="px-2 py-1 border border-blue-500">
+                                                {% set slip_url = url('slip_detail:sys_detail', kwargs={'pk': obj.den_pk}) ~ '?' ~ 'search1=' ~ obj.denno  ~ '&button_display=0' %}
+                                                <a href="{{ slip_url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    data-value="{{ obj.denno_display }}"
+                                                    class="slip_num inline-block mx-auto text-black w-full max-w-35 text-center font-bold text-inherit text-left underline">
+                                                    {{ obj.denno_display }} (親)
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <!-- # 手書き伝票 -->
+                                        <tr>
+                                            <td class="px-2 py-1 border border-blue-500">
+                                                {% set slip_url = url('slip_detail:hand_detail', kwargs={'pk': obj.den_pk}) ~ '?' ~ 'search1=' ~ obj.denno  ~ '&button_display=0' %}
+                                                <a href="{{ slip_url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer" 
+                                                    data-value="{{ obj.denno_display }}"
+                                                    class="slip_num inline-block mx-auto text-black w-full max-w-35 text-center font-bold text-inherit text-left underline">
+                                                    {{ obj.denno_display }} (親)
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% else %}
+                                    <!-- # リンクなし -->
+                                    <tr>
+                                        <td class="px-2 py-1 border border-blue-500 text-left">
+                                            <p>{{ obj.denno_display }} (親)</p>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% elif obj.denno_display %}
+                            <!-- # リンクなし -->
+                            <tr>
+                                <td class="px-2 py-1 border border-blue-500 text-left">
+                                    <p>{{ obj.denno_display }} (親)</p>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <p>&nbsp;</p>
+                        {% endif %}
+                    {% endif %}
+                    {% if obj.s_den_pk and obj.s_denno_display %}
+                        {% if obj.s_denno %}
+                            {% if obj.s_denno_display != object["denno_display"] %}
+                                {% if obj.s_den_type == "S" %}
+                                    <!-- システム伝票 -->
+                                    <tr>
+                                        <td class="px-2 py-1 border border-blue-500">
+                                            {% set slip_url = url('slip_detail:sys_detail', kwargs={'pk': obj.s_den_pk}) ~ '?' ~ 'search1=' ~ obj.s_denno  ~ '&button_display=0' %}
+                                            <a href="{{ slip_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer" 
+                                                data-value="{{ obj.s_denno_display }}"
+                                                class="slip_num inline-block mx-auto text-black w-full max-w-35 text-center font-bold text-inherit text-left underline">
+                                                {{ obj.s_denno_display }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <!-- # 手書き伝票 -->
+                                    <tr>
+                                        <td class="px-2 py-1 border border-blue-500">
+                                            {% set slip_url = url('slip_detail:hand_detail', kwargs={'pk': obj.s_den_pk}) ~ '?' ~  'search1=' ~ obj.s_denno  ~ '&button_display=0' %}
+                                            <a href="{{ slip_url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer" 
+                                                data-value="{{ obj.s_denno_display }}"
+                                                class="slip_num inline-block mx-auto text-black w-full max-w-35 text-center font-bold text-inherit text-left underline">
+                                                {{ obj.s_denno_display }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% else %}
+                                <!-- # リンクなし -->
+                                <tr>
+                                    <td class="px-2 py-1 border border-blue-500 text-left">
+                                        <p>{{ obj.s_denno_display }}</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <!-- # リンクなし -->
+                            <tr>
+                                <td class="px-2 py-1 border border-blue-500 text-left">
+                                    <p>{{ obj.s_denno_display }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% elif obj.s_denno_display %}
+                        <!-- # リンクなし -->
+                        <tr>
+                            <td class="px-2 py-1 border border-blue-500 text-left">
+                                <p>{{ obj.s_denno_display }}</p>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <p>&nbsp;</p>
+                    {% endif %}
+                {% else %}
+                <tr>
+                    <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 商品一覧 -->
+<div class="mx-auto overflow-x-auto">
+    <!-- 鶴屋 -->
+    <table class="w-full text_sm no-split">
+        <thead class="bg-blue-50 text-black">
+            <tr>
+                <th class="w-[5ch] px-2 py-1 text-center font-semibold border border-blue-500">No</th>
+                <th class="w-[7ch] px-2 py-1 text-center font-semibold border border-blue-500">品番</th>
+                <th class="w-[14ch] px-2 py-1 text-center font-semibold border border-blue-500">ギフトコード</th>
+                <th class="w-[25ch] px-2 py-1 text-center font-semibold border border-blue-500">商品名</th>
+                <th class="w-[25ch] px-2 py-1 text-center font-semibold border border-blue-500">商品記号</th>
+                <th class="w-[20ch] px-2 py-1 text-center font-semibold border border-blue-500">色柄·サイズ</th>
+                <th class="w-[6ch] px-2 py-1 text-center font-semibold border border-blue-500">数量</th>
+                <th class="w-[11ch] px-2 py-1 text-center font-semibold border border-blue-500">単価</th>
+                <th class="w-[11ch] px-2 py-1 text-center font-semibold border border-blue-500">合計金額</th>
+                <th class="px-2 py-1 text-center font-semibold border border-blue-500">のしサイズ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in den_m_tbl %}
+            <tr>
+                <td class="px-2 py-1 text-right border border-blue-500">
+                    {% if obj.sgyo_no %}{{ obj.sgyo_no }}{% endif %}
+                </td>
+                <td class="px-2 py-1 text-center border border-blue-500">
+                    {% if obj.hinban %}{{ obj.hinban }}{% endif %}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {% if obj.gcode_irosize %}{{ obj.gcode_irosize }}{% endif %}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {% if obj.hinmei %}{{ obj.hinmei }}{% endif %}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {% if obj.hinkigou %}{{ obj.hinkigou }}{% endif %}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {% if obj.giro_nm %}{{ obj.giro_nm }}<br>{% endif %}
+                    {% if obj.gsize_nm %}{{ obj.gsize_nm }}{% endif %}
+                </td>
+                <td class="px-2 py-1 text-right border border-blue-500">
+                    {% if obj.suryo %}{{ obj.suryo }}{% endif %}
+                </td>
+                <td class="px-2 py-1 text-right border border-blue-500">
+                    {% if obj.tanka %}{{ "{:,.0f}".format(obj.tanka) }}{% endif %}
+                </td>
+                <td class="px-2 py-1 text-right border border-blue-500">
+                    {% if obj.kingaku %}{{ "{:,.0f}".format(obj.kingaku) }}{% endif %}
+                </td>
+                <td class="px-2 py-1 border border-blue-500">
+                    {% if obj.nosigou_scd %}{{ obj.nosigou_scd }}{% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+                <td class="px-2 py-1 border border-blue-500">&nbsp;</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- フッターの操作ボタン -->
+<div class="mt-6" id="buttom-button">
+    <table class="ml-4">
+        <tr>
+            <!-- 前画面へ戻る -->
+            <td class="w-44 text-center align-middle">
+                {% if app_name == "slip_search" %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('slip_search:list') ~ '?' ~ prev_search_params, "sky") }}
+                {% elif juchubi and object["juchu_no"] %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('delivery_address:list', kwargs={'juchubi': juchubi, 'juchu_no': object["juchu_no"]}) ~ '?' ~ prev_search_params, "sky") }}
+                {% elif juchubi %}
+                    {{ btn.LinkBtn("前画面へ戻る", url('delivery_address:list', kwargs={'juchubi': juchubi}) ~ '?' ~ prev_search_params, "sky") }}
+                {% endif %}
+            </td>
+            <td class="w-6"></td>
+            <td class="w-20 text-center align-middle">
+                {# 前へボタンのURLを組み立て #}
+                {% if prev_pk and prev_type %}
+                    {% if prev_type == 'S' %}
+                        {% set prev = url('slip_detail:sys_detail', kwargs={'pk':prev_pk}) %}
+                    {% else %}
+                        {% set prev = url('slip_detail:hand_detail', kwargs={'pk':prev_pk}) %}
+                    {% endif %}
+                    {% set prev_url = prev ~ '?' ~ search_params %}
+                    {{ btn.LinkBtn("前へ", prev_url, "sky") }}
+                {% endif %}
+            </td>
+            <!-- <td class="w-4"></td> -->
+            <td class="w-20 text-center align-middle">
+                {# 次へボタンのURLを組み立て #}
+                {% if search_params and next_pk %}
+                    {% if next_type == 'S' %}
+                        {% set next = url('slip_detail:sys_detail', kwargs={'pk':next_pk}) %}
+                    {% else %}
+                        {% set next = url('slip_detail:hand_detail', kwargs={'pk':next_pk}) %}
+                    {% endif %}
+                    {% set next_url = next ~ '?' ~ search_params %}
+                    {{ btn.LinkBtn("次へ", next_url, "sky") }}
+                {% endif %}
+            </td>
+            <td class="w-10"></td>
+            <!-- 上部の問合せ票出力・業者HPと同じ幅のダミー枠（X位置を上と揃えるため） -->
+            <td class="w-32"></td>
+            <!-- <td class="w-6"></td> -->
+            <td class="w-32"></td>
+        </tr>
+    </table>
+</div>
+{% endif %}
+
+<style>
+.slip_num {
+    color: #2E64FE;
+}
+</style>
+
+<script type="text/javascript">
+    function paramJudg(paramName, value){
+        const params = new URLSearchParams(window.location.search);
+        const paramValue = params.get(paramName);
+        if(paramValue === value){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let uri = new URL(window.location.href);
+        var page_url = uri.pathname;
+
+        // 個口伝票からの遷移の場合
+        if(page_url.includes('slip_detail') && (page_url.includes('sys_detail') || page_url.includes('hand_detail'))){
+            
+            const judg = paramJudg("button_display", "0");
+            if(judg){
+                // サイドバー
+                const navbar = document.getElementById('nav');
+                navbar.style.display = "none";
+
+                // ログアウトボタン
+                const logoutbutton = document.getElementById('logout-form');
+                logoutbutton.style.display = "none";
+
+                // 移動ボタン(上部)（レイアウト位置を保持するため display ではなく visibility で非表示にする）
+                const topbutton = document.getElementById('top-button');
+                topbutton.style.visibility = "hidden";
+
+                // 前画面へ戻るボタン(上部・鶴屋)（親要素の visibility 継承で非表示になるため display は変更しない）
+                const topbuttonback = document.getElementById('top-button-back');
+                if (topbuttonback) topbuttonback.style.visibility = "hidden";
+
+                // 移動ボタン(下部)
+                const buttombutton = document.getElementById('buttom-button');
+                buttombutton.style.display = "none";
+            }
+        }
+    });
+</script>
+
+{% endif %}
+{% endblock %}

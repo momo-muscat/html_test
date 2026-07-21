@@ -1,0 +1,299 @@
+{% macro button(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+{% macro clrbtn(label, color="blue", type="reset") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2">
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_clr_errmsg(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_update(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" name='action' value='update' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_delete(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" name='action' value='delete' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_cancel(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" name='action' value='cancel' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro href_button_delivery(label='', form=[], color="blue", attrs = '') %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<a
+href="{{ url('delivery_data_output:list') }}?delivery_company={{form.delivery_company.value()|urlencode }}
+&from_target_period={{form.from_target_period.value()|urlencode }}
+&to_target_period={{form.to_target_period.value()|urlencode }}"
+target="_blank"
+rel="noopener noreferrer"
+class="
+{{ color_classes.get(color,color_classes['blue']) }}
+inline-flex
+items-center
+justify-center
+w-32
+rounded
+px-4
+py-2
+font-bold
+" {{ attrs }}
+>
+{{ label }}
+</a>
+{% endmacro %}
+
+{% macro href_button_shipping(label='', form=[], color="blue", attrs = '') %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<a
+href="{{ url('shipping_data_output:list') }}
+?den_type={{form.den_type.value()|urlencode }}
+&den_status={{form.den_status.value()|urlencode }}
+&slip_output_place={{form.slip_output_place.value()|urlencode }}
+&from_target_period={{form.from_target_period.value()|urlencode }}
+&to_target_period={{form.to_target_period.value()|urlencode }}
+&shipping_type={{form.shipping_type.value()|urlencode }}
+&exclude_shipping_date={{form.exclude_shipping_date.value()|urlencode }}"
+target="_blank"
+rel="noopener noreferrer"
+class="
+{{ color_classes.get(color,color_classes['blue']) }}
+inline-flex
+items-center
+justify-center
+w-32
+rounded
+px-4
+py-2
+font-bold
+" {{ attrs }}
+>
+{{ label }}
+</a>
+{% endmacro %}
+
+{% macro href_button_accident(label='', form=[], hai_object = [], color="red", attrs='') %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+
+{% if hai_object.den_type == 'S' %}
+  {% set url = url('slip_detail:sys_detail', kwargs={'pk': hai_object.denno if hai_object else 0}) %}
+{% else %}
+  {% set url = url('slip_detail:hand_detail', kwargs={'pk': hai_object.denno if hai_object else 0}) %}
+{% endif %}
+{% set pdf_url = url ~ '?format=pdf&ref=accident_input' %}
+
+<a
+href="{{ pdf_url }}"
+target="_blank"
+rel="noopener noreferrer"
+class="
+{{ color_classes.get(color, color_classes['blue']) }}
+inline-flex
+items-center
+justify-center
+w-45
+rounded
+px-4
+py-2
+font-bold
+" {{ attrs }}
+>
+{{ label }}
+</a>
+{% endmacro %}
+
+{% macro action_button(label, color="blue", value="", href="", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="submit" name='action' value='{{ value }}' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_list_output(label, color="blue", type="submit", value="", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" name='action' value='{{ type }}' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro button_csv_output(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" name='action' value='csv_output' onclick="clrErrorMsg()" class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 font-bold"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro clsbtn(label, color="blue", type="button", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}"
+  class="{{ color_classes.get(color, color_classes['blue']) }}  w-32 rounded px-4 py-2 font-bold" onclick="closeModal()"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro updbtn(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}"
+  class="{{ color_classes.get(color, color_classes['blue']) }}  w-32 rounded px-4 py-2 font-bold" onclick="updModal()"
+  {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro smallbtn(label, color="blue", type="submit", attrs="") %}
+{%
+set color_classes = {
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<button type="{{ type }}" class="{{ color_classes.get(color, color_classes['blue']) }} w-20 rounded px-2 font-bold" {{ attrs }}>
+  {{ label }}
+</button>
+{% endmacro %}
+
+{% macro LinkBtn(label, href="#", color="blue", attrs="") %}
+{%
+set color_classes = {
+"sky": "bg-sky-500 hover:bg-sky-600 text-white",
+"blue": "bg-blue-500 hover:bg-blue-600 text-white",
+"red": "bg-red-500 hover:bg-red-600 text-white",
+"green": "bg-green-500 hover:bg-green-600 text-white",
+"gray": "bg-gray-500 hover:bg-gray-600 text-white",
+}
+%}
+<a href="{{ href }}"
+  class="{{ color_classes.get(color, color_classes['blue']) }} w-32 rounded px-4 py-2 text-center font-bold" {{ attrs }}>
+  {{ label }}
+</a>
+
+{% endmacro %}

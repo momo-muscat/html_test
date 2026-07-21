@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>問合せ票</title>
+    <title>システム伝票詳細</title>
     <script src="https://cdn.tailwindcss.com" defer></script>
   </head>
   <body class="bg-gray-100 min-h-screen py-10">
@@ -439,6 +439,84 @@
             </td>
             <td class="px-2 py-1 border border-blue-500">
                 &nbsp;
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="border-t border-blue-500 mt-3"></div>
+
+      <table
+        class="w-[calc(100%+10px)] -mx-[5px] text-sm border-separate border-spacing-x-[5px] border-spacing-y-0 mt-3"
+      >
+        <colgroup>
+          <col class="w-[35%]" />
+          <col class="w-[35%]" />
+          <col class="w-[30%]" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <td class="align-top">
+              <table class="w-full table-fixed border border-blue-500 border-collapse">
+                <colgroup>
+                  <col class="w-[40%]" />
+                  <col class="w-[60%]" />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">店外店舗</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">岡山支店</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">部門</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">ギフトセンター</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">入力バッチ番号-連番</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">123456-5 (横持)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td class="align-top">
+              <table class="w-full table-fixed border border-blue-500 border-collapse">
+                <colgroup>
+                  <col class="w-[40%]" />
+                  <col class="w-[60%]" />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">配送業者</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">ゆうパック</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">発送コメント</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">発送完了</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">未発送理由</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">宛先不明</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td class="align-top">
+              <table class="w-full table-fixed border border-blue-500 border-collapse">
+                <colgroup>
+                  <col class="w-[40%]" />
+                  <col class="w-[60%]" />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">事故</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">事故あり</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-blue-500 px-1 py-1 align-middle font-bold bg-blue-50">再発行伝票番号</td>
+                    <td class="border border-blue-500 px-1 py-1 align-top">1234-5678-9012</td>
+                  </tr>
+                </tbody>
+              </table>
             </td>
           </tr>
         </tbody>

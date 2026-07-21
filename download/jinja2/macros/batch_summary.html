@@ -1,0 +1,47 @@
+{% macro render_batch_box(title_color, batches) %}
+<div class="bg-white p-4 rounded-lg shadow h-full">
+    <div class="text-sm">
+        <div class="flex justify-between font-semibold pr-3">
+            <span>バッチNo</span>
+            <span>件数</span>
+        </div>
+        <div class="max-h-20 overflow-y-auto mb-2">
+            {% set ns = namespace(total=0) %}
+            {% for batch in batches %}
+            {% set ns.total = ns.total + batch.batch_count %}
+            <div class="flex justify-between py-1 border-b">
+                <span>
+                    {{ "%8d"|format(batch.batch_no) }}{% if batch.eda_and_batchall %}{{ batch.eda_and_batchall }}{% endif %}
+                </span>
+                <span>{{ "{:,}".format(batch.batch_count) if batch.batch_count else 0 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="font-bold text-{{ title_color }}-600">総数: {{ "{:,}".format(ns.total) }}</p>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_batch_box_tsuruya(title_color, batches, den_type) %}
+<div class="bg-white p-4 rounded-lg shadow h-full">
+    <div class="text-sm">
+        <div class="flex justify-between font-semibold pr-3">
+            <span>バッチNo</span>
+            <span>件数</span>
+        </div>
+        <div class="max-h-20 overflow-y-auto mb-2">
+            {% set ns = namespace(total=0) %}
+            {% for batch in batches if batch.den_type == den_type %}
+            {% set ns.total = ns.total + batch.batch_count %}
+            <div class="flex justify-between py-1 border-b">
+                <span>
+                    {{ "%8d"|format(batch.batch_no) }}{% if batch.eda_and_batchall %}{{ batch.eda_and_batchall }}{% endif %}
+                </span>
+                <span>{{ "{:,}".format(batch.batch_count) if batch.batch_count else 0 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="font-bold text-{{ title_color }}-600">総数: {{ "{:,}".format(ns.total) }}</p>
+    </div>
+</div>
+{% endmacro %}

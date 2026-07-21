@@ -1,0 +1,244 @@
+{% macro render_field(field, attrs={}) %}
+{% set is_visible = field.field.visible if field.field.visible is defined else True %}
+{% if is_visible %}
+{% if field.field.widget.__class__.__name__ == "CheckboxInput" %}
+{# チェックボックスの場合はレイアウトを変更 #}
+<div class="mb-2 flex items-center justify-between max-w-md">
+  {{ field.label_tag(attrs={"class": "block font-bold m-2 whitespace-nowrap"}) | safe }}
+
+  {# デフォルトのチェックボックス用クラス #}
+  {% set checkbox_attrs = {
+  "class": "w-4 h-4 mx-auto text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500
+  focus:ring-2 cursor-pointer"
+  } %}
+
+  {# attrs が渡された場合はマージ #}
+  {% if attrs %}
+  {% set final_attrs = checkbox_attrs.copy() %}
+  {% for k, v in attrs.items() %}
+  {% set _ = final_attrs.update({k: v}) %}
+  {% endfor %}
+  {% else %}
+  {% set final_attrs = checkbox_attrs %}
+  {% endif %}
+
+  {{ field.as_widget(attrs=final_attrs) | safe }}
+</div>
+{% else %}
+<div class="mb-2 flex items-center justify-between max-w-md">
+  {{ field.label_tag(attrs={"class": "block font-bold m-2 whitespace-nowrap"}) | safe }}
+  {# デフォルトのクラス属性 #}
+  {% set default_attrs = {
+  "class": "border bg-white py-2 block border-gray-300 rounded-lg px-4 appearance-none focus:outline-none
+  leading-normal disabled:bg-gray-300 placeholder:text-gray-400",
+  } %}
+
+  {# attrs が渡された場合はマージ #}
+  {% if attrs %}
+  {% set final_attrs = default_attrs.copy() %}
+  {% for k, v in attrs.items() %}
+  {% set _ = final_attrs.update({k: v}) %}
+  {% endfor %}
+  {% else %}
+  {% set final_attrs = default_attrs %}
+  {% endif %}
+
+  {# --- 値の優先順位 ---
+  1. field.value()（ユーザー入力値）
+  2. field.initial（ビューで設定した初期値）
+  #}
+  {% set field_value = field.value() if field.value() is not none else field.initial %}
+  {% if field.field.__class__.__name__ == "InputDateField" and field_value is not none %}
+  {% set date_display_format = field.field.widget.attrs.get("display_format", "%Y-%m-%d") %}
+  {% set field_value = field_value|display_format(date_display_format) %}
+  {% endif %}
+
+  {# --- セレクト系の判定 ---
+  Widget名でSelectかどうかを見て、安全に初期値反映する
+  #}
+  {% if "Select" in field.field.widget.__class__.__name__ %}
+  {# ModelChoiceFieldやSelectの場合: field.field.initialに設定 #}
+  {% if field_value is not none %}
+  {% set _ = field.field.__setattr__("initial", field_value) %}
+  {% endif %}
+  {{ field.as_widget(attrs=final_attrs) | safe }}
+  {% else %}
+  {# 通常のinput系: value属性を設定 #}
+  {% if field_value is not none %}
+  {% set _ = final_attrs.update({"value": field_value}) %}
+  {% endif %}
+  {{ field.as_widget(attrs=final_attrs) | safe }}
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="mb-5 max-w-lg text-sm">
+  {% if field.help_text %}
+  <p class="mr-16 text-right text-gray-600">{{ field.help_text }}</p>
+  {% endif %}
+
+  {% if field.errors %}
+    {% for error in field.errors %}
+  <p class="w-[33ch] ml-auto mr-5 text-left font-bold text-red-600">{{ error }}</p>
+    {% endfor %}
+  {% endif %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+
+<!-- 共通入力フィールドマクロ -->
+{% macro input_field(field, field_id=None, field_name=None, attrs={}) %}
+  {# フォームにフィールドが存在する場合だけ描画する #}
+  {% if field is defined and field %}
+    {# 非表示フィールドはここでは描画しない #}
+    {% set is_visible = field.field.visible if field.field.visible is defined else True %}
+    {% if is_visible %}
+    {# ウィジェット設定から活性状態と種別を判定する #}
+    {% set ui_active = field.field.widget.attrs.get('ui_active', True) %}
+    {% set disabled = (not ui_active) or field.field.widget.attrs.get('disabled', False) %}
+    {% set is_select_widget = "Select" in field.field.widget.__class__.__name__ %}
+    <div class="mb-2 flex items-start gap-4 max-w-md">
+      <label class="block font-bold mt-2 whitespace-nowrap w-36 text-left" for="{{ field_id if field_id else 'id_' ~ field.name }}">{{ field.label }}</label>
+      <div class="flex flex-col w-[13rem]">
+        {# ベースとなるHTML属性を組み立てる #}
+        {% set default_attrs = {
+          "class": "border bg-white py-2 block border-gray-300 rounded-lg px-4 appearance-none focus:outline-none leading-normal placeholder:text-gray-400 disabled:bg-gray-300"
+        } %}
+        {% if field.field.widget.attrs.get('autocomplete') %}
+          {% set _ = default_attrs.update({"autocomplete": field.field.widget.attrs.get('autocomplete')}) %}
+        {% endif %}
+        {% if disabled %}
+          {% set _ = default_attrs.update({"class": default_attrs["class"] ~ " !bg-gray-300 cursor-text"}) %}
+        {% endif %}
+        {% if field.field.widget.attrs.get('placeholder') %}
+          {% set _ = default_attrs.update({"placeholder": field.field.widget.attrs.get('placeholder')}) %}
+        {% endif %}
+        {% if field_id %}
+          {% set _ = default_attrs.update({"id": field_id}) %}
+        {% endif %}
+        {% if field_name %}
+          {% set _ = default_attrs.update({"name": field_name}) %}
+        {% endif %}
+
+        {# 呼び出し側のattrsを優先してマージする #}
+        {% if attrs %}
+          {% set final_attrs = default_attrs.copy() %}
+          {% if attrs.get("class") %}
+            {% set merged_class = (default_attrs.get("class", "") ~ " " ~ attrs.get("class", "")).strip() %}
+            {% set _ = final_attrs.update({"class": merged_class}) %}
+          {% endif %}
+          {% for k, v in attrs.items() %}
+            {% if k != "class" %}
+              {% set _ = final_attrs.update({k: v}) %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% set final_attrs = default_attrs %}
+        {% endif %}
+
+        {# 非活性時は見た目と送信値の扱いを調整する #}
+        {% if disabled %}
+          {% set final_class = final_attrs.get("class", "") %}
+          {% if "bg-gray-300" not in final_class and "!bg-gray-300" not in final_class %}
+            {% set _ = final_attrs.update({"class": (final_class ~ " !bg-gray-300 cursor-text").strip()}) %}
+          {% endif %}
+          {% if not is_select_widget %}
+            {% set _ = final_attrs.update({"readonly": True}) %}
+            {% set _ = final_attrs.pop("disabled", None) %}
+          {% endif %}
+          {% set _ = final_attrs.update({"placeholder": ""}) %}
+        {% endif %}
+    
+        {# 入力値を取得し、日付フィールドは表示用に整形する #}
+        {% set field_value = field.value() if field.value() is not none else field.initial %}
+        {% if field.field.__class__.__name__ == "InputDateField" and field_value is not none %}
+          {% set date_display_format = field.field.widget.attrs.get("display_format", "%Y-%m-%d") %}
+          {% set field_value = field_value|display_format(date_display_format) %}
+        {% endif %}
+
+        {# 非活性のselectは表示専用入力とhiddenで値を保持する #}
+        {% if is_select_widget and disabled %}
+          {% set field_name_attr = final_attrs.get("name", field.html_name) %}
+          {% set field_id_attr = final_attrs.get("id", "id_" ~ field.name) %}
+          {% set current_value = field.value() if field.value() is not none else field.initial %}
+          {% set ns = namespace(current_label="") %}
+          {% for opt_value, opt_label in field.field.choices %}
+            {% if opt_value|string == current_value|string %}
+              {% set ns.current_label = opt_label %}
+            {% endif %}
+          {% endfor %}
+          <input
+            type="text"
+            id="{{ field_id_attr }}"
+            class="{{ final_attrs.get('class', '') }}"
+            value="{{ ns.current_label }}"
+            readonly
+          />
+          <input type="hidden" name="{{ field_name_attr }}" value="{{ current_value if current_value is not none else '' }}" />
+        {% elif is_select_widget %}
+          {# select系はinitialに値を反映して描画する #}
+          {% if field_value is not none %}
+            {% set _ = field.field.__setattr__("initial", field_value) %}
+          {% endif %}
+          {{ field.as_widget(attrs=final_attrs) | safe }}
+        {% else %}
+          {# input系はvalue属性に値を設定して描画する #}
+          {% if field_value is not none %}
+            {% set _ = final_attrs.update({"value": field_value}) %}
+          {% endif %}
+          {{ field.as_widget(attrs=final_attrs) | safe }}
+        {% endif %}
+    
+        {# バリデーションエラーがあれば入力欄の下に表示する #}
+        {% if field.errors %}
+        <!-- todo ara モード変更時にエラーメッセージが消えるよう考慮 -->
+        <div class="error mt-1 text-red-600 text-sm">
+          {% for error in field.errors %}
+          <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+<!-- 共通入力期間フィールドマクロ -->
+<!-- todo ara ここコードのFrom-Toも使用しているのでもうちょいいい命名があるかもな～ -->
+{% macro input_period_field(from_field_id, to_field_id, label_name) %}
+  {% set from_field = form[from_field_id] %}
+  {% set to_field = form[to_field_id] %}
+  {% if from_field is defined and from_field and to_field is defined and to_field %}
+    <div class="mb-2 flex items-start gap-4 max-w-3xl">
+      <label class="block font-bold mt-2 whitespace-nowrap w-36 text-left">{{ label_name }}</label>
+      <div class="ml-8 flex items-start gap-4">
+        <div class="flex flex-col w-[11rem]">
+          {{ from_field.as_widget(attrs={"class": "border bg-white py-2 block border-gray-300 rounded-lg px-4 appearance-none focus:outline-none leading-normal placeholder:text-gray-400"}) | safe }}
+          {% if from_field.errors %}
+          <!-- todo ara モード変更時にエラーメッセージが消えるよう考慮 -->
+          <div class="error mt-1 text-red-600 text-sm">
+            {% for error in from_field.errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        <div class="h-[42px] flex items-center text-lg font-bold">～</div>
+        <div class="flex flex-col w-[11rem]">
+          {{ to_field.as_widget(attrs={"class": "border bg-white py-2 block border-gray-300 rounded-lg px-4 appearance-none focus:outline-none leading-normal placeholder:text-gray-400"}) | safe }}
+          {% if to_field.errors %}
+          <!-- todo ara モード変更時にエラーメッセージが消えるよう考慮 -->
+          <div class="error mt-1 text-red-600 text-sm">
+            {% for error in to_field.errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}
